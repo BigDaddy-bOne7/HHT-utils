@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <serverIp>218.17.35.140:8686</serverIp>
+    <customerName>SZZD</customerName>
+    <interfaceVersion>v1.0</interfaceVersion>
+    <customerIp>218.17.35.138</customerIp>
+    <sessionKey>2017SZZDAV1</sessionKey>
+    <appKey>SZZD</appKey>
+</config>

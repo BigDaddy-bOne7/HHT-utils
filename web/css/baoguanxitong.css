@@ -1,0 +1,468 @@
+@charset "utf-8";
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 微软雅黑, 宋体, 仿宋;
+    font-size: 14px;
+    /*background: url("../img/bj-2.jpg");*/
+
+    /*设置自适应*/
+    display: flex;
+    flex-flow: column;
+    min-height: 100vh;
+}
+
+.span {
+    display: inline-block;
+}
+
+form {
+    display: inline-block;
+}
+
+body {
+    background: #C4E1E1;
+}
+
+/* login 页*/
+
+#login-waiceng {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.login-denglukuang {
+    width: 300px;
+    height: 200px;
+    position: fixed;
+    top: 50%;
+    margin-top: -100px;
+    left: 50%;
+    margin-left: -150px;
+    background: orange;
+    padding-top: 30px;
+}
+
+.login-denglukuang .login-p {
+    height: 50px;
+    line-height: 50px;
+}
+
+.shurukuang-w {
+    width: 200px;
+    height: 25px;
+    line-height: 25px;
+    padding-left: 5px;
+}
+
+.login-p .span {
+    width: 70px;
+    text-align: right;
+    margin-right: 5px;
+}
+
+.denglu-but {
+    text-align: center;
+}
+
+.login-anniu-denglu {
+    padding: 2px 15px;
+}
+
+/* 操作页*/
+/*外框*/
+
+body {
+    display: flex;
+    flex-flow: column;
+    min-height: 100vh;
+}
+
+.main {
+    flex: 1;
+}
+
+.waibukuang {
+    /*margin-top: 5px;*/
+    width: 1200px;
+    height: 100%;
+    background: #E8FFC4;
+    margin: 0 auto;
+    margin-top: 5px;
+    border-radius: 5px;
+}
+
+/*顶部*/
+#dingbu {
+    width: 100%;
+    height: 60px;
+    line-height: 60px;
+    font-size: 40px;
+
+}
+
+/*头部*/
+#toubu {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    padding-left: 10px;
+    background: #FFFFDF;
+}
+
+/*统一版 标题 */
+.tongyibanbiaoti {
+    font-size: 25px;
+    color: #000000;
+    margin-right: 20px;
+}
+
+.gongsimingcheng {
+    width: 1200px;
+    text-align: center;
+    margin: 0 auto;
+    color: orange;
+}
+
+.startDateKuang {
+    margin-right: 20px;
+    font-size: 16px;
+}
+
+.start_date {
+    height: 30px;
+    line-height: 30px;
+    border-radius: 3px;
+}
+
+.anniu_denglu {
+    padding: 0 10px;
+    margin-right: 50px;
+    cursor: pointer;
+}
+
+.anniu_huoquqingdanhao {
+    padding: 3px 10px;
+    margin-right: 50px;
+    font-size: 14px;
+    color: green;
+    /*border-radius: 2px;*/
+    cursor: pointer;
+}
+
+.anniu_shezhi {
+    padding: 0 10px;
+    margin-right: 50px;
+    cursor: pointer;
+}
+
+/*设置外框----------------------------------------*/
+.shezhikuang {
+    width: 500px;
+    /*height:500px;*/
+    background: #97CBFF;
+    margin: 0 auto;
+    padding: 10px 0;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -250px;
+    margin-top: -250px;
+    display: none;
+}
+
+.shezhikuang.on {
+    display: block;
+    z-index: 99999;
+}
+
+.anniu_shezhi_baocun {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    width: 50px;
+    height: 20px;
+    line-height: 20px;
+    /*border-radius: 2px;*/
+    cursor: pointer;
+}
+
+.shezi_neirong {
+    margin: 0;
+    list-style: none;
+}
+
+.shezi_neirong .li {
+    height: 30px;
+    line-height: 30px;
+}
+
+.shezi_neirong .span {
+    width: 160px;
+    /*background: red;*/
+    text-align: right;
+}
+
+.shezi_neirong .shurukuang_shezhi {
+    width: 160px;
+    height: 23px;
+    line-height: 23px;
+    /*background: red;*/
+    text-align: left;
+    padding-left: 5px;
+}
+
+/*设置外框----end------------------------------------*/
+
+.anniu_xianshichaxinjiguo {
+    height: 50px;
+    line-height: 50px;
+    padding-left: 50px;
+
+}
+
+.anniu_xianshichaxinjiguo_1 {
+    cursor: pointer;
+    padding: 0 10px;
+}
+
+.anniu_xianshichaxinjiguo .chaxunjieguo {
+    margin-left: 500px;
+}
+
+/*表单*/
+.xianshijieguokuang {
+    font-size: 0;
+    /*overflow: auto;*/
+}
+
+.biaotihang {
+    font-size: 14px;
+    width: 100%;
+    height: 30px;
+    line-height: 30px;
+    background: #E0E0E0;
+    border-bottom: 3px solid #000;
+}
+
+.liebiao {
+    font-size: 14px;
+}
+
+.biaotihang .span {
+    font-size: 14px;
+    display: inline-block;
+    text-align: center;
+}
+
+.liebiao .li .span {
+    font-size: 14px;
+    display: inline-block;
+    text-align: center;
+    border-right: 1px solid #000;
+}
+
+.biaotihang .lie_1, .liebiao .li .lie_1 {
+    width: 30px;
+    /*background: red;*/
+}
+
+.anniu_fuxian {
+    width: 15px;
+    height: 15px;
+}
+
+.biaotihang .lie_2, .liebiao .li .lie_2 {
+    width: 40px;
+    /*background: greenyellow;*/
+}
+
+.biaotihang .lie_3, .liebiao .li .lie_3 {
+    width: 250px;
+    /*background: red;*/
+}
+
+.biaotihang .lie_4, .liebiao .li .lie_4 {
+    width: 300px;
+    /*background: greenyellow;*/
+}
+
+.biaotihang .lie_5, .liebiao .li .lie_5 {
+    width: 300px;
+    /*background: red;*/
+}
+
+.biaotihang .lie_6, .liebiao .li .lie_6 {
+    width: 240px;
+    /*background: red;*/
+    border-right: 1px solid #fff;
+}
+
+.liebiao {
+    margin: 0;
+    height: 400px;
+    max-height: 400px;
+    /*height: 200px;*/
+    list-style: none;
+    overflow: hidden;
+    Overflow-y: scroll
+}
+
+.liebiao .li {
+    /*margin-left: -40px;*/
+    height: 25px;
+    line-height: 25px;
+    border-bottom: 1px solid #000;
+    /*cursor:pointer;*/
+}
+
+/*鼠标滑过变色*/
+.liebiao .li:hover {
+    background: orange;
+}
+
+.waibukuang .tongji {
+    z-index: 10;
+    display: inline-block;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    /*padding: 5px 0 0 100px;*/
+    position: relative;
+    padding-left: 50px;
+    border-top: 1px solid #23527c;
+}
+
+.waibukuang .tongji .shuliang {
+    display: inline-block;
+    /*width: 300px;*/
+    height: 40px;
+    line-height: 40px;
+}
+
+.xiugaitiyundanhao {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 600px;
+    /*background: red;*/
+    height: 40px;
+    line-height: 40px;
+    padding-left: 10px;
+    /*float:right;*/
+}
+
+.xiugaihoutiyundanhao_shurukuang {
+    padding-left: 5px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 3px;
+}
+
+/*园区版操作*/
+
+.text_biaot {
+    height: 50px;
+    line-height: 50px;
+    padding-left: 10px;
+}
+
+.huoqudingdan {
+    padding: 0 5px;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.anniu_yuanquban_denglu,
+.anniu_yuanquban_tijiao,
+.anniu_yuanquban_shanbao {
+    padding: 0 5px;
+    margin-left: 50px;
+    cursor: pointer;
+}
+
+.p {
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
+}
+
+.p .span {
+    margin: 0 5px;
+}
+
+.p .dengluchenggong.on {
+    font-size: 14px;
+    color: green;
+    display: inline-block;
+}
+
+.p .dengluchenggong {
+    font-size: 14px;
+    color: green;
+    display: none;
+}
+
+.p .denglushibai.on {
+    font-size: 14px;
+    color: red;
+    display: inline-block;
+}
+
+.p .denglushibai {
+    font-size: 14px;
+    color: red;
+    display: none;
+}
+
+.p .shuijin_shu, .p .dingdan_shu {
+    width: 100px;
+}
+
+.xiugai_queren_anniu {
+    padding: 3px 10px;
+    cursor: pointer;
+    margin-left: 20px;
+}
+
+.getiao {
+    height: 10px;
+    background: #8c8c8c;
+}
+
+/*页脚*/
+.footer-neirong {
+
+    width: 1200px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    background: #E0E0E0;
+    text-align: center;
+    font-size: 16px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.footer-neirong a {
+    text-decoration: blink;
+    color: #000000;
+}
+
+.log-image {
+    width: 100px;
+    height: 100px;
+    position: absolute;
+    right: 100px;
+    top: 50%;
+    margin-top: -50px;
+
+}
+
+.log-image img {
+    width: 100%;
+}
