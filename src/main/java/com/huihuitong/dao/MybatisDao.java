@@ -33,6 +33,8 @@ public interface MybatisDao {
     @Update("update listnostatus set formId = #{formId} where listNo = #{listNo}")
     void updateFormId(@Param("formId") String formId, @Param("listNo") String listNo);
 
+    @Select("select formId from listnostatus where listNo = #{listNo}")
+    String getFormId(@Param("listNo") String listNo);
     // 获取清单编号
     @Select("select listNo from listnostatus where copno = #{copNo}")
     String getListNo(@Param("copNo") String copNo);

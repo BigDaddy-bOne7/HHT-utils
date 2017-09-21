@@ -41,11 +41,13 @@ public class LoginController {
     @RequestMapping(value = "/loginService")
     public void LoginService(HttpServletRequest request, HttpServletResponse response) {
         // 读取表单中的账号密码
+        try {
         String userName = request.getParameter("userName");
         String userPassword = request.getParameter("userPassword");
         System.out.println(userName + ":" + userPassword);
         response.setHeader("Access-Control-Allow-Origin", "*");
         response.setCharacterEncoding("utf-8");
+
         int code;
         String message;
         boolean result = false;
@@ -53,6 +55,9 @@ public class LoginController {
         JSONObject json = new JSONObject();
         // 获取session
         HttpSession session = request.getSession(true);
+
+
+
         if (userName.equals("")) {
             code = 400;
             message = "用户名为空！";
@@ -71,6 +76,7 @@ public class LoginController {
                 message = "用户名或密码错误！";
             }
         }
+
         json.put("code", code);
         json.put("message", message);
         json.put("result", result);
@@ -81,6 +87,9 @@ public class LoginController {
             out.flush();
             out.close();
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        }catch (Exception e){
             e.printStackTrace();
         }
     }

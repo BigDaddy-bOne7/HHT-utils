@@ -31,9 +31,11 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
     private GetFormIdService formService = new GetFormIdServiceImpl();
 
     @Override
-    public void execute(String copNo) {
+    public String execute(String copNo) {
         if (Utils.getMybatisDao().getStatus(copNo) == 1) {
-            upload(copNo);
+            return upload(copNo);
+        }else{
+            return null;
         }
     }
 
@@ -46,6 +48,9 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
         // 获取订单信息
         OrderInfo orderInfo = orderService.getOrderInfo(copNo, logisticsNo);
         // 获取企业备案名称
+        if (orderInfo == null) {
+            return "ECM中无此订单:"+copNo;
+        }
         System.out.println(orderInfo.getOrgCode());
         String cusName = Utils.getMybatisDao().getCusCode(orderInfo.getOrgCode());
         // 上传表头信息
@@ -83,6 +88,7 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
         }
         // 更新数据库状态
         Utils.getMybatisDao().updateListNoStatus(copNo, 2);
+
         return null;
     }
 

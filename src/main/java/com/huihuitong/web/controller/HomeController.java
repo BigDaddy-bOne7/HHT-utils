@@ -25,6 +25,7 @@ public class HomeController {
 
     private static boolean isRunning = false;
 
+
     // 首页
     @RequestMapping(value = "/")
     public String LoginPage(HttpServletRequest request) {

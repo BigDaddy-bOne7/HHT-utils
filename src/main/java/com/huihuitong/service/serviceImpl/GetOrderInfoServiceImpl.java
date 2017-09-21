@@ -8,7 +8,8 @@ import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
-import org.apache.http.client.ClientProtocolException;
+
+
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -49,6 +50,7 @@ public class GetOrderInfoServiceImpl implements GetOrderInfoService {
             e.printStackTrace();
         }
         // 获取sign
+        assert config != null;
         String serverIp = config.getString("serverIp");
         String customerName = config.getString("customerName");
         String interfaceVersion = config.getString("interfaceVersion");
@@ -65,7 +67,7 @@ public class GetOrderInfoServiceImpl implements GetOrderInfoService {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost(url);
         // 添加参数
-        List<NameValuePair> formparams = new ArrayList<NameValuePair>();
+        List<NameValuePair> formparams = new ArrayList<>();
         formparams.add(new BasicNameValuePair("v", interfaceVersion));
         formparams.add(new BasicNameValuePair("ip", customerIp));
         formparams.add(new BasicNameValuePair("sessionKey", sessionKey));
@@ -82,8 +84,7 @@ public class GetOrderInfoServiceImpl implements GetOrderInfoService {
         try {
             uefEntity = new UrlEncodedFormEntity(formparams, "utf-8");
             httpPost.setEntity(uefEntity);
-            CloseableHttpResponse response = httpclient.execute(httpPost);
-            try {
+            try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     String respon = EntityUtils.toString(entity, "UTF-8");
@@ -95,15 +96,11 @@ public class GetOrderInfoServiceImpl implements GetOrderInfoService {
                         System.out.println(resultMsg);
                         orderInfo = JSONObject.parseObject(resultMsg, OrderInfo.class);
                         System.out.println("从ECM获取到商品为  " + orderInfo.getOrderDtls().get(0).getGname() + " 的订单信息");
+                    } else {
+                        return null;
                     }
                 }
-            } finally {
-                response.close();
             }
-        } catch (ClientProtocolException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

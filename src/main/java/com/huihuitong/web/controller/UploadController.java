@@ -1,10 +1,13 @@
 package com.huihuitong.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
+import com.huihuitong.service.DeclareService;
 import com.huihuitong.service.ServiceProcess;
+import com.huihuitong.service.serviceImpl.DeclareServiceImpl;
 import com.huihuitong.service.serviceImpl.ParkLoginServiceImpl;
 import com.huihuitong.service.serviceImpl.UploadServiceImpl;
 import com.huihuitong.utils.ThreadFactory;
+import com.huihuitong.utils.Utils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -50,6 +53,27 @@ public class UploadController {
         execTask(uploadList, UploadServiceImpl.class);
         return null;
     }
+
+    @RequestMapping(value = "/declareList")
+    public String DeclareList(HttpServletRequest request) {
+        // 获取登录用户名
+        if (request.getSession().getAttribute("userName") == null) {
+            return "login";
+        }
+        DeclareService declareService = new DeclareServiceImpl();
+        // 园区版登陆
+        new ParkLoginServiceImpl().login();
+        // 从前端页面获取需要上传园区版的copNo
+        @SuppressWarnings("unchecked")
+        List<String> declareList = JSONObject.parseObject(request.getParameter("copNo"), List.class);
+        System.out.println(declareList);
+        // 开启多线程上传到园区版
+        for (String copNo : declareList) {
+            String listNo = Utils.getMybatisDao().getListNo(copNo);
+            declareService.declare(listNo);
+        }
+        return null;
+    }
 }
 
 class ServiceTask implements Runnable {
@@ -68,9 +92,10 @@ class ServiceTask implements Runnable {
     public void run() {
         logger.debug("ServiceTask :" + taskNum);
         try {
-            cls.newInstance().execute(copNo);
+            String s = cls.newInstance().execute(copNo);
         } catch (InstantiationException | IllegalAccessException e) {
             logger.debug(e);
         }
+
     }
 }

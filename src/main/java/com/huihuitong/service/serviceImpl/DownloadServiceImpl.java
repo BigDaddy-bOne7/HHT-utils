@@ -26,13 +26,16 @@ public class DownloadServiceImpl implements DownloadService, PageProcessor {
     private LocalDate EndDate;
     // 设置页面显示编码，添加cookie
     private Site site = Site.me().setRetryTimes(10).setSleepTime(3 * 1000).setTimeOut(100000).setCharset("GBK")
-            .addHeader("Cookie", "JSESSIONID=" + uniteCookie);
+            .addHeader("Cookie", "JSESSIONID=" + uniteCookie)
+            .addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36")
+            .addHeader("Upgrade-Insecure-Requests","1")
+            .addHeader("Host","www.szceb.cn");
 
     public DownloadServiceImpl() {
 
     }
 
-    public DownloadServiceImpl(String userName, LocalDate startDate, LocalDate endDate) {
+    private DownloadServiceImpl(String userName, LocalDate startDate, LocalDate endDate) {
         this.user = Utils.getMybatisDao().getUser(userName);
         this.uniteCookie = user.getUniteCookie();
         this.StartDate = startDate;
@@ -49,6 +52,7 @@ public class DownloadServiceImpl implements DownloadService, PageProcessor {
     @Override
     public void downLoad(String userName, LocalDate startDate, LocalDate endDate) {
         new com.huihuitong.service.serviceImpl.UniteLoginServiceImpl().login(userName);
+        System.out.println("1的值是：" + 1 + ",当前方法=DownloadServiceImpl.downLoad()");
         user = Utils.getMybatisDao().getUser(userName);
         uniteCookie = user.getUniteCookie();
         System.out.println("cookie:" + uniteCookie);
@@ -71,6 +75,7 @@ public class DownloadServiceImpl implements DownloadService, PageProcessor {
         String pageNo = page.getHtml()
                 .xpath("/html/body/table/tbody/tr[2]/td[2]/table[3]/tbody/tr/td/table/tbody/tr/td/div/text()")
                 .toString();
+        System.out.println("page的值是：" + page.getHtml() + ",当前方法=DownloadServiceImpl.process()");
         if (pageNo != null) {
             if ("没有找到任何数据".equals(pageNo.trim())) {
                 Utils.page = Utils.lastPage + 1;

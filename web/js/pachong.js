@@ -24,7 +24,7 @@ $(function () {
             }
         });
     }
-    ;
+
 
     quanxuan();
 
@@ -50,7 +50,7 @@ $(function () {
                     getDownloadList();// 调用显示 函数 将更新 完清单号的 结果 显示到页面上
                 }
             },
-            error: function (data) {
+            error: function () {
                 alert("获取清单号失败")
             }
         });
@@ -89,7 +89,7 @@ $(function () {
             }
         });
     }
-    ;
+
 
     // 将更新 完清单号的 结果 显示到页面上
     function getDownloadList() {
@@ -143,7 +143,7 @@ $(function () {
                 }
             });
     }
-    ;
+
 
     // 按钮
 
@@ -182,17 +182,58 @@ $(function () {
             }
         })
 
+
     }
-    ;
+
+    function declare() {
+        var $_copNo_zu = []; // 新建数组
+
+        var $_xuanzheshu = $('.waibukuang .xianshijieguokuang .liebiao .li input:checked');
+
+        $_xuanzheshu.each(function () {
+            if ($_xuanzheshu) {
+                $_copNo_zu.push($(this).val());
+
+            }
+        });
+        console.log($_copNo_zu.length);
+        console.log($_copNo_zu);
+
+        if (parseInt($_copNo_zu.length) < 1) {
+            alert("请选择要暂存的订单！");
+        }
+
+        $.ajax({
+            url: '/declareList',// 跳转到 action
+            type: 'post', // 传输方式
+            data: {
+                copNo: JSON.stringify($_copNo_zu)
+            }, // 传输 选择列表中 的 val
+            // 内部号
+            async: true, // ajax请求是异步的
+            cache: false,// 不缓存ajax结果
+            dataType: 'json',// 接收 数据格式
+
+            success: function (data) {
+                console.log(data)
+
+            }
+        })
+
+
+    }
 
     var $_zancunyuanquban_but = $(".yuanquban_dairu .anniu_yuanquban_tijiao"); // 园区版
+    var $_declareButton = $(".yuanquban_dairu .anniu_yuanquban_shanbao");
     // 暂存
     // 按钮
 
     $_zancunyuanquban_but.click(function () { // 暂存园区版
-        console.log(111);
         huoqu_neibuhao_neibuhao();
 
     });
+    $_declareButton.click(function () { // 暂存园区版
+        declare();
+    })
 
 });
