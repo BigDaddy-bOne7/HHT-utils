@@ -14,7 +14,6 @@ import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -27,9 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by yangz on 2017/7/20 10:38.
- */
 @Service
 public class UniteLoginServiceImpl implements UniteLoginService {
     @Override

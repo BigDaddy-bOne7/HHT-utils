@@ -1,6 +1,6 @@
 package com.huihuitong.service.serviceImpl;
 
-import com.huihuitong.meta.ListNoStatus;
+import com.huihuitong.meta.ListStatus;
 import com.huihuitong.meta.User;
 import com.huihuitong.service.DownloadService;
 import com.huihuitong.utils.Utils;
@@ -10,14 +10,12 @@ import us.codecraft.webmagic.Site;
 import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.regex.Pattern;
 
-/**
- * Created by yangz on 2017/7/20 10:21.
- *
- */
+
 public class DownloadServiceImpl implements DownloadService, PageProcessor {
     // 获取全局变量
     private String uniteCookie;
@@ -27,12 +25,11 @@ public class DownloadServiceImpl implements DownloadService, PageProcessor {
     // 设置页面显示编码，添加cookie
     private Site site = Site.me().setRetryTimes(10).setSleepTime(3 * 1000).setTimeOut(100000).setCharset("GBK")
             .addHeader("Cookie", "JSESSIONID=" + uniteCookie)
-            .addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36")
-            .addHeader("Upgrade-Insecure-Requests","1")
-            .addHeader("Host","www.szceb.cn");
+            .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36")
+            .addHeader("Upgrade-Insecure-Requests", "1")
+            .addHeader("Host", "www.szceb.cn");
 
     public DownloadServiceImpl() {
-
     }
 
     private DownloadServiceImpl(String userName, LocalDate startDate, LocalDate endDate) {
@@ -75,7 +72,6 @@ public class DownloadServiceImpl implements DownloadService, PageProcessor {
         String pageNo = page.getHtml()
                 .xpath("/html/body/table/tbody/tr[2]/td[2]/table[3]/tbody/tr/td/table/tbody/tr/td/div/text()")
                 .toString();
-        System.out.println("page的值是：" + page.getHtml() + ",当前方法=DownloadServiceImpl.process()");
         if (pageNo != null) {
             if ("没有找到任何数据".equals(pageNo.trim())) {
                 Utils.page = Utils.lastPage + 1;
@@ -95,17 +91,23 @@ public class DownloadServiceImpl implements DownloadService, PageProcessor {
                 .xpath("/html/body/table/tbody/tr[2]/td[2]/table[2]/tbody/tr/td[4]/text()").all();
         List<String> orderNo = page.getHtml().xpath("/html/body/table/tbody/tr[2]/td[2]/table[2]/tbody/tr/td[5]/text()")
                 .all();
+        List<String> date = page.getHtml().xpath("/html/body/table/tbody/tr[2]/td[2]/table[2]/tbody/tr/td[10]/text()")
+                .all();
         // 将爬取到的数据存到数据库
         for (int i = 0; i < copNo.size(); i++) {
-            ListNoStatus lns = new ListNoStatus();
+            ListStatus lns = new ListStatus();
             lns.setOrgCode(user.getOrgCode());
             lns.setCopNo(copNo.get(i).trim());
             lns.setListNo(listNo.get(i + 1).trim());
             lns.setLogisticsNo(logisticsNo.get(i + 1).trim());
             lns.setOrderNo(orderNo.get(i + 1).trim());
+            String date1 = date.get(i+1).substring(0,date.get(i+1).indexOf(" "));
+            System.out.println("date1的值是：" + date1 + ",当前方法=DownloadServiceImpl.process()");
+            lns.setDate(Date.valueOf(date1));
             lns.setStatus(1);
-            while (Utils.getMybatisDao().getListNo(copNo.get(i).trim()) == null) {
-                Utils.getMybatisDao().insertListNoStatus(lns);
+            ListStatus listStatus = Utils.getMybatisDao().getListStatusByCopNo(copNo.get(i).trim());
+            if (listStatus == null) {
+                Utils.getMybatisDao().insertListStatus(lns);
             }
             Utils.presentNo++;
             System.out.println(Utils.presentNo + "/" + Utils.totalNo);

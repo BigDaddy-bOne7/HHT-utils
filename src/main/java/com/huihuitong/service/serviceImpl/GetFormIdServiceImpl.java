@@ -4,6 +4,7 @@ import com.huihuitong.service.GetFormIdService;
 import com.huihuitong.utils.Utils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -18,9 +19,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by yangz on 2017/7/20 10:23.
- */
 @Service
 public class GetFormIdServiceImpl implements GetFormIdService {
     @Override
@@ -30,6 +28,7 @@ public class GetFormIdServiceImpl implements GetFormIdService {
         System.out.println("listNo:" + listNo + "parkCookie:" + parkCookie);
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("http://pub.szcport.cn/bbmi/bbmStoreFormHeadQQuery.action");
+        httpPost.setConfig(RequestConfig.custom().setSocketTimeout(60000).setConnectTimeout(60000).build());
         httpPost.setHeader("Cookie", "JSESSIONID=" + parkCookie);
 
         List<NameValuePair> formparams = new ArrayList<>();
@@ -45,7 +44,6 @@ public class GetFormIdServiceImpl implements GetFormIdService {
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     Html html = Html.create(EntityUtils.toString(entity, "UTF-8"));
-                    System.out.println(html);
                     formId = html.xpath("//*[@id='table_area']/table/tbody/tr[1]/td[2]/text()").toString();
                     System.out.println(formId);
                 }

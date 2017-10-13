@@ -14,7 +14,7 @@
     <link rel="stylesheet" href="css/baoguanxitong.css">
 
 </head>
-<body>F
+<body>
 <div class="waibukuang main">
     <div id="dingbu">
         <div class="gongsimingcheng">深圳市汇惠通电子商务有限公司报关系统</div>
@@ -35,6 +35,7 @@
 
             <input class="anniu_huoquqingdanhao" name="anniu_huoquqingdanhao"
                    type="button" value="获取清单号">
+            <input type="button" class="anniu_yuanquban_shenbaoliebiao" name="anniu_yuanquban_shenbaoliebiao" value="获取可申报列表">
 
         </div>
 
@@ -59,23 +60,20 @@
 
     </div>
     <div class="tongji">
-			<span class="span">共 <span class="shuliang span">000</span> 条
-
-
+			<span class="span">共 <span class="shuliang span">000</span>条</span>
     </div>
     <hr class="getiao">
     <div class="yuanquban_dairu">
         <div class="text_biaot">园区版导入</div>
 
         <div class="">
-
             <input type="submit" class="anniu_yuanquban_tijiao" value="暂 存">
             <input type="submit" class="anniu_yuanquban_shanbao" value="申 报">
+            <input type="submit" class="button_totalTax" value="统计税金">
         </div>
-        <p class="p ">
+        <p class="p">
             <span class="span">数量：</span><span class="span shuliang">10000</span><span
                 class="span shuliang_wenzi">单</span>
-
         </p>
         <p class="p">
             <span class="span">税金：</span><span class="span shuijin_shu"></span>人民币

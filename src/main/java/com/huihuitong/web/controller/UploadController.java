@@ -16,9 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
 
-/**
- * Created by yangz on 2017/7/20 9:46.
- */
 @Controller
 public class UploadController {
     private static Logger logger = Logger.getLogger(UploadController.class);
@@ -54,31 +51,10 @@ public class UploadController {
         return null;
     }
 
-    @RequestMapping(value = "/declareList")
-    public String DeclareList(HttpServletRequest request) {
-        // 获取登录用户名
-        if (request.getSession().getAttribute("userName") == null) {
-            return "login";
-        }
-        DeclareService declareService = new DeclareServiceImpl();
-        // 园区版登陆
-        new ParkLoginServiceImpl().login();
-        // 从前端页面获取需要上传园区版的copNo
-        @SuppressWarnings("unchecked")
-        List<String> declareList = JSONObject.parseObject(request.getParameter("copNo"), List.class);
-        System.out.println(declareList);
-        // 开启多线程上传到园区版
-        for (String copNo : declareList) {
-            String listNo = Utils.getMybatisDao().getListNo(copNo);
-            declareService.declare(listNo);
-        }
-        return null;
-    }
 }
 
 class ServiceTask implements Runnable {
     private static Logger logger = Logger.getLogger(ServiceTask.class);
-
     private int taskNum;
     private String copNo;
     private Class<? extends ServiceProcess> cls;
@@ -92,7 +68,7 @@ class ServiceTask implements Runnable {
     public void run() {
         logger.debug("ServiceTask :" + taskNum);
         try {
-            String s = cls.newInstance().execute(copNo);
+            cls.newInstance().execute(copNo);
         } catch (InstantiationException | IllegalAccessException e) {
             logger.debug(e);
         }

@@ -146,7 +146,8 @@ body {
     cursor: pointer;
 }
 
-.anniu_huoquqingdanhao {
+.anniu_huoquqingdanhao,
+.anniu_yuanquban_shenbaoliebiao {
     padding: 3px 10px;
     margin-right: 50px;
     font-size: 14px;
@@ -380,6 +381,7 @@ body {
 
 .anniu_yuanquban_denglu,
 .anniu_yuanquban_tijiao,
+.button_totalTax,
 .anniu_yuanquban_shanbao {
     padding: 0 5px;
     margin-left: 50px;

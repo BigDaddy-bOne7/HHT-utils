@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>slideshow</title>
+    <!--<link rel="stylesheet" href="/css/swiper.min.css">-->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .slideshow-border {
+            width: 1340px;
+            height: 100%;
+            box-sizing: border-box;
+            border: red solid 1px;
+            text-align: center;
+            font-size: 70px;
+        }
+
+        .slideshow-header {
+            width: 100%;
+            /*background: rosybrown;*/
+        }
+
+        .span {
+            display: inline-block;
+        }
+
+        .slideshow-header .line-1 {
+            width: 620px;
+            text-align: center;
+            /*border: red solid 1px;*/
+            font-size: 80px;
+        }
+
+        .slideshow-header .line-2 {
+            width: 300px;
+            text-align: center;
+            font-size: 80px;
+
+        }
+
+        .slideshow-header .line-3 {
+            width: 300px;
+            text-align: center;
+            font-size: 80px;
+        }
+
+        .swiper-container .line-1 {
+            width: 620px;
+            text-align: left;
+        }
+
+        .swiper-container .line-2 {
+            width: 300px;
+            text-align: center;
+        }
+
+        .swiper-container .line-3 {
+            width: 300px;
+            text-align: right;
+        }
+
+        .swiper-container {
+            width: 100%;
+            /*background: #999;*/
+            height: 604px;
+            overflow: hidden;
+        }
+
+        .swiper-slide {
+            color: #0000C6;
+        }
+
+        .swiper-slide:nth-child(odd) {
+            /*color: #0000C6;*/
+            background: #F3F3FA;
+        }
+
+        /*.swiper-slide:nth-child(even) {*/
+        /*color: red;*/
+        /*}*/
+
+    </style>
+</head>
+<body id="body">
+<div class="slideshow-border">
+    <div class="slideshow-header">
+        <span class="tiyundanhao span  line-1">提运单号</span>
+        <span class="shenhetongguo span line-2">通过</span>
+        <span class="zancun span line-3">暂存</span>
+    </div>
+
+
+    <div class="swiper-container  carousel">
+        <div class="swiper-wrapper" id="displayArea">
+        </div>
+        <!-- 如果需要分页器 -->
+        <!--<div class="swiper-pagination"></div>-->
+
+        <!-- 如果需要导航按钮 -->
+        <!--<div class="swiper-button-prev"></div>-->
+        <!--<div class="swiper-button-next"></div>-->
+
+        <!-- 如果需要滚动条 -->
+        <div class="swiper-scrollbar" style="display: none"></div>
+    </div>
+
+
+    <div class="allNumber" style="font-size: 80px; ">
+        <span class=" text">通过：</span>
+        <span class=" number" style="color: green;text-align: left"> </span>
+        <span class="zancun_text" style="margin-left: 100px">暂存：</span>
+        <span class=" zancun_number" style="color: red;text-align: left"> </span>
+    </div>
+
+    <!--</div>-->
+</div>
+
+</body>
+<script src="js/jquery-3.1.1.min.js"></script>
+<script src="swiper/swiper.jquery.min.js"></script>
+<script src="js/perfectMove.js"></script>
+<script>
+    $(function () {
+        timer();
+        //定时器
+        var interval;
+        var num = 0;
+
+        function timer() {
+            interval = setInterval(chat, "50000");
+        }
+
+        var $_displayArea = $("#displayArea");
+        chat();
+
+        function chat() {
+            var oUl = $(".carousel #displayArea");
+            var Num;
+            Num = oUl.css("transform").replace(/[^0-9\-,]/g, '').split(',');  //获取 移动盒子 的移动 参数
+            console.log(Num.length);
+            if (Num.length === 6) {
+                location.reload(); //刷新页面
+            }
+            $.ajax({
+                url: '/showStatus',//路径 获取数据
+                data: null, // 提交的值
+                type: 'post', //请求方式
+                //                     cache: false, //是否读取浏览器缓存 true 为是   false 为 不读取
+                dataType: 'json',//指定返回数据类型
+                success: function (data) {
+                    var $_data = data;
+                    var $_displayArea = $("#displayArea");
+                    $_displayArea.empty();
+                    console.log($_data);
+                    // 显示获取数据
+                    for (var i = 0; i < $_data.length; i++) {
+                        var $_div = '<div class="swiper-slide slide swiper-slides"><span class="span line-1 orderNO" style="border-right: 1px solid red">'
+                            + data[i].deliverId
+                            + '</span><span class="span line-2 approve " style="text-align: center;  border-right: 1px solid red">'
+                            + data[i].passNum
+                            + '</span><span class="span line-3 temporaryStorage">'
+                            + data[i].temporaryNum
+                            + ' </span></div>';
+                        $_displayArea.append($_div);
+                    }
+
+                    temporaryStorage(); //计算暂存 总数
+                    approve(); //计算 审核通过总数
+
+                    function approve() {    //计算 审核通过总数
+                        var $_Approve = $(".swiper-wrapper .swiper-slide .line-2");
+                        var $_allNumber = $(".allNumber .number");
+                        var $_shuzhi = 0;
+                        $_Approve.each(function () {    //  遍历 元素
+                            $_shuzhi += parseInt($(this).html());   // 值 累加后 赋给一个 变量
+                        });
+                        $_allNumber.html($_shuzhi);  //将 累加后的 值 赋给 目标元素
+                    }
+
+                    function temporaryStorage() {//计算暂存 总数
+                        var $_Approve2 = $(".swiper-wrapper .swiper-slide .line-3");
+                        var $_allNumber2 = $(".allNumber .zancun_number");
+                        var $_shuzhi2 = 0;
+                        $_Approve2.each(function () {    //  遍历 元素
+                            $_shuzhi2 += parseInt($(this).html());   // 值 累加后 赋给一个 变量
+                        });
+                        $_allNumber2.html($_shuzhi2);  //将 累加后的 值 赋给 目标元素
+                    }
+                    if (Num.length === 1) {
+                        mySwiper();
+                    }
+
+                    function mySwiper() {
+                        console.log(666);
+                        var mySwiper = new Swiper('.swiper-container', {
+                            direction: 'vertical',
+                            loop: true,
+                            autoplay: 1000,//自动切换 时间
+                            speed: 1000,//滑动速度，即slider自动滑动开始到结束的时间（单位ms）
+                            height: 500,//slide 高度
+                            slidesPerGroup: 1,//下定义slides的数量多少为一组。
+                            autoplayDisableOnInteraction: false,//如果设置为false，用户操作swiper之后自动切换不会停止，每次都会重新启动autoplay。
+                            slidesPerView: 5,
+                            centeredSlides: true,
+                            pagination: '.swiper-pagination',
+                            scrollbar: '.swiper-scrollbar'
+                        })
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        }
+    });
+</script>
+</html>

@@ -11,9 +11,7 @@ import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-/**
- * Created by yangz on 2017/7/20 9:46.
- */
+
 @Controller
 public class LoginController {
     // 登陆页面

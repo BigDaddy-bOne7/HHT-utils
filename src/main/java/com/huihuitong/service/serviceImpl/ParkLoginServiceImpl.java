@@ -10,11 +10,7 @@ import com.huihuitong.utils.Utils;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.MalformedURLException;
 
-/**
- * Created by yangz on 2017/7/20 10:34.
- */
 @Service
 public class ParkLoginServiceImpl implements ParkLoginService {
     private static final String LOGIN_URL = "http://pub.szcport.cn/bbmi/index.action";
@@ -34,7 +30,6 @@ public class ParkLoginServiceImpl implements ParkLoginService {
         webClient.getOptions().setTimeout(300000);
 
         // 获取首页
-
         HtmlPage page = null;
         try {
             page = webClient.getPage(LOGIN_URL);

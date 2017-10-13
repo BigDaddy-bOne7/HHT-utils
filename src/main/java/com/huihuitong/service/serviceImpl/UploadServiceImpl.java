@@ -1,6 +1,8 @@
 package com.huihuitong.service.serviceImpl;
 
-import com.huihuitong.meta.OrderDtl;
+import com.huihuitong.meta.ListStatus;
+import com.huihuitong.meta.OrderDetail;
+import com.huihuitong.meta.OrderHeader;
 import com.huihuitong.meta.OrderInfo;
 import com.huihuitong.service.GetFormIdService;
 import com.huihuitong.service.GetOrderInfoService;
@@ -9,6 +11,7 @@ import com.huihuitong.service.UploadService;
 import com.huihuitong.utils.Utils;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -21,11 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by yangz on 2017/7/20 10:48.
- */
 public class UploadServiceImpl implements UploadService, ServiceProcess {
-    private String cookie = Utils.getMybatisDao().getUserById(1).getParkCookie();
+    private String cookie = Utils.getMybatisDao().getParkCookie();
 
     private GetOrderInfoService orderService = new GetOrderInfoServiceImpl();
     private GetFormIdService formService = new GetFormIdServiceImpl();
@@ -42,19 +42,22 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
     @Override
     public String upload(String copNo) {
         // 获取运单编号
-        String logisticsNo = Utils.getMybatisDao().getLogisticsNo(copNo);
+        ListStatus listStatus = Utils.getMybatisDao().getListStatusByCopNo(copNo);
+        String logisticsNo = listStatus.getLogisticsNo();
         // 获取清单编号
-        String listNo = Utils.getMybatisDao().getListNo(copNo);
+        String listNo = listStatus.getListNo();
         // 获取订单信息
-        OrderInfo orderInfo = orderService.getOrderInfo(copNo, logisticsNo);
+        String orderNo = listStatus.getOrderNo();
+        OrderInfo orderInfo = orderService.getOrderInfo(orderNo, logisticsNo);
         // 获取企业备案名称
         if (orderInfo == null) {
+            System.out.println("copNo的值是：" + copNo + ",当前方法=UploadServiceImpl.upload()");
             return "ECM中无此订单:"+copNo;
         }
-        System.out.println(orderInfo.getOrgCode());
-        String cusName = Utils.getMybatisDao().getCusCode(orderInfo.getOrgCode());
+        OrderHeader orderHeader = orderInfo.getOrderHeader();
+        String cusName = Utils.getMybatisDao().getCusCode(orderHeader.getOrgCode());
         // 上传表头信息
-        uploadHeader(orderInfo, listNo, cusName);
+        uploadHeader(orderHeader, listNo, cusName);
 
         String formId = null;
         int n = 0;
@@ -75,27 +78,28 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
             Utils.getMybatisDao().updateFormId(formId, listNo);
         }
         // 上传表体信息
-        List<OrderDtl> orderDtls = orderInfo.getOrderDtls();
-        for (OrderDtl orderDtl : orderDtls) {
-            System.out.println(formId + "....." + orderDtl.getGname());
-            uploadBody(orderDtl, formId, orderInfo.getOrgCode());
-            // 延时1秒
+        List<OrderDetail> orderDetails = orderInfo.getOrderDetails();
+        for (OrderDetail orderDetail : orderDetails) {
+            System.out.println(formId + "....." + orderDetail.getGname());
+            uploadBody(orderDetail, formId, orderHeader.getOrgCode());
+            // 延时0.5秒
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
         // 更新数据库状态
-        Utils.getMybatisDao().updateListNoStatus(copNo, 2);
+        Utils.getMybatisDao().updateListStatus(copNo, 2);
 
         return null;
     }
 
     @Override
-    public void uploadHeader(OrderInfo orderInfo, String listNo, String cusName) {
+    public void uploadHeader(OrderHeader orderHeader, String listNo, String cusName) {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("http://pub.szcport.cn/bbmi/headImOLShoppingOutSaveOrUpdate.action");
+        httpPost.setConfig(RequestConfig.custom().setSocketTimeout(60000).setConnectTimeout(60000).build());
         httpPost.setHeader("Cookie", "JSESSIONID=" + cookie);
         // 添加参数
         List<NameValuePair> formparams = new ArrayList<>();
@@ -106,36 +110,36 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
         formparams.add(new BasicNameValuePair("storeFormHead.destinationPort", "142"));
         formparams.add(new BasicNameValuePair("storeFormHead.trafMode", "Y"));
         formparams.add(new BasicNameValuePair("storeFormHead.wrapType", "2"));
-        formparams.add(new BasicNameValuePair("storeFormHead.packNo", orderInfo.getPackNo() + ""));
-        formparams.add(new BasicNameValuePair("storeFormHead.grossWt", orderInfo.getGrossWeight() + ""));
-        formparams.add(new BasicNameValuePair("storeFormHead.netwet", orderInfo.getNetWeight() + ""));
-        formparams.add(new BasicNameValuePair("storeFormHead.fee", orderInfo.getFreight() + ""));
-        formparams.add(new BasicNameValuePair("storeFormHead.insur", orderInfo.getInsuredFee() + ""));
+        formparams.add(new BasicNameValuePair("storeFormHead.packNo", orderHeader.getPackNo() + ""));
+        formparams.add(new BasicNameValuePair("storeFormHead.grossWt", orderHeader.getGrossWeight() + ""));
+        formparams.add(new BasicNameValuePair("storeFormHead.netwet", orderHeader.getNetWeight() + ""));
+        formparams.add(new BasicNameValuePair("storeFormHead.fee", "0.0"));
+        formparams.add(new BasicNameValuePair("storeFormHead.insur", "0.0"));
         formparams.add(new BasicNameValuePair("storeFormHead.tradeCountry", "142"));
-        formparams.add(new BasicNameValuePair("storeFormHead.sender", orderInfo.getCopName()));
+        formparams.add(new BasicNameValuePair("storeFormHead.sender", orderHeader.getCopName()));
         formparams.add(new BasicNameValuePair("storeFormHead.senderCountry", "142"));
         formparams.add(new BasicNameValuePair("storeFormHead.senderCity", "深圳市"));
-        formparams.add(new BasicNameValuePair("storeFormHead.receiver", orderInfo.getBuyerName()));
-        formparams.add(new BasicNameValuePair("storeFormHead.receiverCountry", orderInfo.getConsigneeCountry()));
-        formparams.add(new BasicNameValuePair("storeFormHead.receiverCity", orderInfo.getConsigneeCity()));
-        formparams.add(new BasicNameValuePair("storeFormHead.receiverIdCard", orderInfo.getBuyerIdNumber()));
-        formparams.add(new BasicNameValuePair("storeFormHead.receiverTel", orderInfo.getBuyerTelephone()));
+        formparams.add(new BasicNameValuePair("storeFormHead.receiver", orderHeader.getBuyerName()));
+        formparams.add(new BasicNameValuePair("storeFormHead.receiverCountry", "142"));
+        formparams.add(new BasicNameValuePair("storeFormHead.receiverCity", orderHeader.getConsigneeCity()));
+        formparams.add(new BasicNameValuePair("storeFormHead.receiverIdCard", orderHeader.getBuyerIdNumber()));
+        formparams.add(new BasicNameValuePair("storeFormHead.receiverTel", orderHeader.getBuyerTelephone()));
         formparams.add(new BasicNameValuePair("storeFormHead.agentCode", "4403660004"));
         formparams.add(new BasicNameValuePair("storeFormHead.agentName", "深圳市卓鼎汇通供应链服务有限公司"));
         formparams.add(new BasicNameValuePair("storeFormHead.tradeCo", "4403660004"));
-        formparams.add(new BasicNameValuePair("storeFormHead.ebpCode", orderInfo.getEbpCode()));
-        formparams.add(new BasicNameValuePair("storeFormHead.orderNo", orderInfo.getOrderNo()));
-        formparams.add(new BasicNameValuePair("storeFormHead.logisticsCode", orderInfo.getLogisticsCode()));
-        formparams.add(new BasicNameValuePair("storeFormHead.logisticsNo", orderInfo.getLogisticsNo()));
-        formparams.add(new BasicNameValuePair("storeFormHead.payCode", orderInfo.getPayCode()));
-        formparams.add(new BasicNameValuePair("storeFormHead.paymentNo", orderInfo.getPayTransactionId()));
-        formparams.add(new BasicNameValuePair("storeFormHead.trafNo", orderInfo.getTranfNo()));
+        formparams.add(new BasicNameValuePair("storeFormHead.ebpCode", orderHeader.getEbpCode()));
+        formparams.add(new BasicNameValuePair("storeFormHead.orderNo", orderHeader.getOrderNo()));
+        formparams.add(new BasicNameValuePair("storeFormHead.logisticsCode", "4403360004"));
+        formparams.add(new BasicNameValuePair("storeFormHead.logisticsNo", orderHeader.getLogisticsNo()));
+        formparams.add(new BasicNameValuePair("storeFormHead.payCode", orderHeader.getPayCode()));
+        formparams.add(new BasicNameValuePair("storeFormHead.paymentNo", orderHeader.getPayTransactionId()));
+        formparams.add(new BasicNameValuePair("storeFormHead.trafNo", orderHeader.getTranfNo()));
         formparams.add(new BasicNameValuePair("businessTypeMark", "E11W"));
         formparams.add(new BasicNameValuePair("storeFormHead.operType", "E11W"));
         formparams.add(new BasicNameValuePair("storeFormHead.IEMode", "E"));
         formparams.add(new BasicNameValuePair("storeFormHead.relativeFormId", listNo));
         formparams.add(new BasicNameValuePair("storeFormHead.cusName", cusName));
-        formparams.add(new BasicNameValuePair("storeFormHead.cusCode", orderInfo.getOrgCode()));
+        formparams.add(new BasicNameValuePair("storeFormHead.cusCode", orderHeader.getOrgCode()));
         formparams.add(new BasicNameValuePair("storeFormHead.relativeFormType", "6"));
 
         UrlEncodedFormEntity uefEntity;
@@ -165,24 +169,25 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
     }
 
     @Override
-    public void uploadBody(OrderDtl orderDtl, String formId, String cusCode) {
+    public void uploadBody(OrderDetail orderDetail, String formId, String cusCode) {
         CloseableHttpClient httpclient = HttpClients.createDefault();
         HttpPost httpPost = new HttpPost("http://pub.szcport.cn/bbmi/listImOLShoppingOutSaveOrUpdate.action");
+        httpPost.setConfig(RequestConfig.custom().setSocketTimeout(60000).setConnectTimeout(60000).build());
         httpPost.setHeader("Cookie", "JSESSIONID=" + cookie);
         // 添加参数
         List<NameValuePair> formparams = new ArrayList<>();
         formparams.add(new BasicNameValuePair("relation.mergerMode", "0"));
-        formparams.add(new BasicNameValuePair("relation.goodsId", orderDtl.getItemRecordNo()));
-        formparams.add(new BasicNameValuePair("relation.codeTs", orderDtl.getGcode()));
-        formparams.add(new BasicNameValuePair("relation.GNameCn", orderDtl.getGname()));
-        formparams.add(new BasicNameValuePair("relation.GModel", orderDtl.getGmodel()));
-        formparams.add(new BasicNameValuePair("relation.GQty", orderDtl.getQty()));
-        formparams.add(new BasicNameValuePair("relation.GUnit", orderDtl.getUnit()));
-        formparams.add(new BasicNameValuePair("relation.declTotal", orderDtl.getTotalPrice()));
+        formparams.add(new BasicNameValuePair("relation.goodsId", orderDetail.getItemRecordNo()));
+        formparams.add(new BasicNameValuePair("relation.codeTs", orderDetail.getGcode()));
+        formparams.add(new BasicNameValuePair("relation.GNameCn", orderDetail.getGname()));
+        formparams.add(new BasicNameValuePair("relation.GModel", orderDetail.getGmodel()));
+        formparams.add(new BasicNameValuePair("relation.GQty", orderDetail.getQty()));
+        formparams.add(new BasicNameValuePair("relation.GUnit", orderDetail.getUnit()));
+        formparams.add(new BasicNameValuePair("relation.declTotal", orderDetail.getTotalPrice()));
         formparams.add(new BasicNameValuePair("relation.curr", "142"));
-        formparams.add(new BasicNameValuePair("relation.qty1", orderDtl.getQty1()));
-        formparams.add(new BasicNameValuePair("relation.unit1", orderDtl.getUnit1()));
-        formparams.add(new BasicNameValuePair("relation.originCountry", orderDtl.getOriCountry()));
+        formparams.add(new BasicNameValuePair("relation.qty1", orderDetail.getQty1()));
+        formparams.add(new BasicNameValuePair("relation.unit1", "035"));
+        formparams.add(new BasicNameValuePair("relation.originCountry", orderDetail.getOriCountry()));
         formparams.add(new BasicNameValuePair("relation.useTo", "11"));
         formparams.add(new BasicNameValuePair("pageIndex", "1"));
         formparams.add(new BasicNameValuePair("relation.formId", formId));

@@ -6,9 +6,6 @@ import org.springframework.web.context.ContextLoader;
 import javax.servlet.ServletContext;
 import java.security.MessageDigest;
 
-/**
- * Created by yangz on 2017/7/20 9:46.
- */
 public class Utils {
     private static final ServletContext context = ContextLoader.getCurrentWebApplicationContext().getServletContext();
     private static final MybatisDao dao = ContextLoader.getCurrentWebApplicationContext().getBean("mybatisDao",

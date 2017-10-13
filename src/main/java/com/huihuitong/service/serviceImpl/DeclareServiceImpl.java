@@ -1,5 +1,6 @@
 package com.huihuitong.service.serviceImpl;
 
+import com.huihuitong.meta.ListStatus;
 import com.huihuitong.service.DeclareService;
 import com.huihuitong.utils.Utils;
 import org.apache.http.HttpEntity;
@@ -17,13 +18,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by yangz on 2017/9/19 10:45.
- */
 public class DeclareServiceImpl implements DeclareService {
     @Override
     public void declare(String listNo) {
-        String formId = Utils.getMybatisDao().getFormId(listNo);
+        ListStatus listStatus = Utils.getMybatisDao().getListStatusByListNo(listNo);
+        String formId = listStatus.getFormId();
         String token = getToken(listNo, formId);
         String parkCookie = Utils.getMybatisDao().getUserById(1).getParkCookie();
         System.out.println("listNo:" + listNo + "parkCookie:" + parkCookie);
@@ -41,6 +40,7 @@ public class DeclareServiceImpl implements DeclareService {
             httpPost.setEntity(uefEntity);
             System.out.println("executing request " + httpPost.getURI());
             httpclient.execute(httpPost);
+            Utils.getMybatisDao().updateListStatusByFormId(formId,3);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
