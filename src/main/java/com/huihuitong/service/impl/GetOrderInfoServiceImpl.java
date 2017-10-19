@@ -1,4 +1,4 @@
-package com.huihuitong.service.serviceImpl;
+package com.huihuitong.service.impl;
 
 import com.huihuitong.meta.OrderDetail;
 import com.huihuitong.meta.OrderHeader;

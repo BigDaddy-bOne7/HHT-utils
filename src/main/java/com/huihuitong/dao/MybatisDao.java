@@ -23,12 +23,12 @@ public interface MybatisDao {
                                    @Param("endDate") String endDate, @Param("orgCode") String orgCode);
 
     @Select("SELECT DISTINCT oh.SecondaryWayBillCode " +
-            "FROM order_header oh RIGHT JOIN spider_list_status sls ON oh.OrderCode = sls.orderNo " +
+            "FROM order_header oh INNER JOIN spider_list_status sls ON oh.OrderCode = sls.orderNo " +
             "where DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= sls.date")
     List<String> listDeliverId();
 
     @Select("SELECT sls.id, sls.orgCode, sls.copNo, sls.listNo, sls.logisticsNo, sls.orderNo, sls.status, sls.formId, sls.parkStatus, sls.date" +
-            "FROM order_header oh LEFT JOIN spider_list_status sls ON oh.OrderCode = sls.orderNo " +
+            "FROM order_header oh INNER JOIN spider_list_status sls ON oh.OrderCode = sls.orderNo " +
             "where oh.SecondaryWayBillCode = #{deliverId} and DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= sls.date")
     List<ListStatus> getListStatusByDeliverId(@Param("deliverId") String deliverId);
 
@@ -44,11 +44,11 @@ public interface MybatisDao {
     Integer getStatus(@Param("copNo") String copNo);
 
     //获取ECM订单信息
-    @Select("SELECT " +
+    @Select("SELECT DISTINCT " +
             "oh.Id AS Id, " +
             "cc.companyName AS CopName, " +
             "oh.TotalQty AS packNo, " +
-            "odc.GrossWeight AS grossWeight, " +
+            "ohc.TotalGrossWeight AS grossWeight, " +
             "odc.NetWeight AS netWeight, " +
             "ohc.BuyerID AS buyerName, " +
             "oh.ShipToCity AS consigneeCity, " +

@@ -1,4 +1,4 @@
-package com.huihuitong.service.serviceImpl;
+package com.huihuitong.service.impl;
 
 import com.huihuitong.meta.ListStatus;
 import com.huihuitong.meta.OrderDetail;
@@ -21,6 +21,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,7 +92,7 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
         }
         // 更新数据库状态
         Utils.getMybatisDao().updateListStatus(copNo, 2);
-
+        Utils.temporaryNum++;
         return null;
     }
 
@@ -110,7 +111,7 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
         formparams.add(new BasicNameValuePair("storeFormHead.destinationPort", "142"));
         formparams.add(new BasicNameValuePair("storeFormHead.trafMode", "Y"));
         formparams.add(new BasicNameValuePair("storeFormHead.wrapType", "2"));
-        formparams.add(new BasicNameValuePair("storeFormHead.packNo", orderHeader.getPackNo() + ""));
+        formparams.add(new BasicNameValuePair("storeFormHead.packNo", "1"));
         formparams.add(new BasicNameValuePair("storeFormHead.grossWt", orderHeader.getGrossWeight() + ""));
         formparams.add(new BasicNameValuePair("storeFormHead.netwet", orderHeader.getNetWeight() + ""));
         formparams.add(new BasicNameValuePair("storeFormHead.fee", "0.0"));
@@ -185,7 +186,9 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
         formparams.add(new BasicNameValuePair("relation.GUnit", orderDetail.getUnit()));
         formparams.add(new BasicNameValuePair("relation.declTotal", orderDetail.getTotalPrice()));
         formparams.add(new BasicNameValuePair("relation.curr", "142"));
-        formparams.add(new BasicNameValuePair("relation.qty1", orderDetail.getQty1()));
+        DecimalFormat df = new DecimalFormat("#0.00");
+        double qty1 = Integer.valueOf(orderDetail.getQty())*Double.valueOf(orderDetail.getQty1());
+        formparams.add(new BasicNameValuePair("relation.qty1", df.format(qty1)+""));
         formparams.add(new BasicNameValuePair("relation.unit1", "035"));
         formparams.add(new BasicNameValuePair("relation.originCountry", orderDetail.getOriCountry()));
         formparams.add(new BasicNameValuePair("relation.useTo", "11"));

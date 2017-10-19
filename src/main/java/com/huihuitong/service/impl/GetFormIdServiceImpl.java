@@ -1,4 +1,4 @@
-package com.huihuitong.service.serviceImpl;
+package com.huihuitong.service.impl;
 
 import com.huihuitong.service.GetFormIdService;
 import com.huihuitong.utils.Utils;

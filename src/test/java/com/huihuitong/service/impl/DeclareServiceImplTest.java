@@ -1,4 +1,4 @@
-package com.huihuitong.service.serviceImpl;
+package com.huihuitong.service.impl;
 
 import org.junit.Test;
 

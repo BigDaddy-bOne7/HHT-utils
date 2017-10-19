@@ -1,4 +1,4 @@
-package com.huihuitong.service.serviceImpl;
+package com.huihuitong.service.impl;
 
 import com.huihuitong.service.SlideShowService;
 import com.huihuitong.utils.Utils;

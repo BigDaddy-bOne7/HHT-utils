@@ -1,7 +1,7 @@
 package com.huihuitong.web.controller;
 
-import com.huihuitong.service.serviceImpl.ParkLoginServiceImpl;
-import com.huihuitong.service.serviceImpl.UpdateParkStatusServiceImpl;
+import com.huihuitong.service.impl.ParkLoginServiceImpl;
+import com.huihuitong.service.impl.UpdateParkStatusServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 

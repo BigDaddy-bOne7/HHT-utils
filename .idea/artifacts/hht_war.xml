@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
   <artifact type="war" build-on-make="true" name="hht:war">
     <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="hht-1.0-SNAPSHOT.war">
+    <root id="archive" name="hht.war">
       <element id="artifact" artifact-name="hht:war exploded" />
     </root>
   </artifact>

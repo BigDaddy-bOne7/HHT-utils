@@ -5,9 +5,9 @@ import com.alibaba.fastjson.JSONObject;
 import com.huihuitong.meta.ListStatus;
 import com.huihuitong.meta.User;
 import com.huihuitong.service.DeclareService;
-import com.huihuitong.service.serviceImpl.DeclareServiceImpl;
-import com.huihuitong.service.serviceImpl.DownloadServiceImpl;
-import com.huihuitong.service.serviceImpl.ParkLoginServiceImpl;
+import com.huihuitong.service.impl.DeclareServiceImpl;
+import com.huihuitong.service.impl.DownloadServiceImpl;
+import com.huihuitong.service.impl.ParkLoginServiceImpl;
 import com.huihuitong.utils.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -193,7 +193,7 @@ public class HomeController {
         return null;
     }
     @RequestMapping(value = "/declareList")
-    public String DeclareList(HttpServletRequest request) {
+    public String DeclareList(HttpServletRequest request,HttpServletResponse response) {
         // 获取登录用户名
         if (request.getSession().getAttribute("userName") == null) {
             return "login";
@@ -209,6 +209,18 @@ public class HomeController {
         for (String copNo : declareList) {
             String listNo = Utils.getMybatisDao().getListStatusByCopNo(copNo).getListNo();
             declareService.declare(listNo);
+        }
+        JSONObject json = new JSONObject();
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setCharacterEncoding("utf-8");
+        json.put("message","共申报了"+declareList.size()+"单");
+        try {
+            PrintWriter out = response.getWriter();
+            out.println(json.toJSONString());
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         return null;
     }

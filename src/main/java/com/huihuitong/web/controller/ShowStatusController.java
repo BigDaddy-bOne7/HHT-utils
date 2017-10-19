@@ -3,7 +3,7 @@ package com.huihuitong.web.controller;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.huihuitong.service.SlideShowService;
-import com.huihuitong.service.serviceImpl.SlideShowServiceImpl;
+import com.huihuitong.service.impl.SlideShowServiceImpl;
 import com.huihuitong.utils.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,4 +1,4 @@
-package com.huihuitong.service.serviceImpl;
+package com.huihuitong.service.impl;
 
 import com.huihuitong.meta.ListStatus;
 import com.huihuitong.meta.User;
@@ -48,7 +48,7 @@ public class DownloadServiceImpl implements DownloadService, PageProcessor {
 
     @Override
     public void downLoad(String userName, LocalDate startDate, LocalDate endDate) {
-        new com.huihuitong.service.serviceImpl.UniteLoginServiceImpl().login(userName);
+        new com.huihuitong.service.impl.UniteLoginServiceImpl().login(userName);
         System.out.println("1的值是：" + 1 + ",当前方法=DownloadServiceImpl.downLoad()");
         user = Utils.getMybatisDao().getUser(userName);
         uniteCookie = user.getUniteCookie();

@@ -1,4 +1,4 @@
-package com.huihuitong.service.serviceImpl;
+package com.huihuitong.service.impl;
 
 import com.huihuitong.service.UpdateParkStatusService;
 import com.huihuitong.utils.Utils;
@@ -8,7 +8,8 @@ import us.codecraft.webmagic.Spider;
 import us.codecraft.webmagic.processor.PageProcessor;
 
 import java.util.List;
-import java.util.regex.Pattern;
+
+import static java.util.regex.Pattern.*;
 
 public class UpdateParkStatusServiceImpl implements UpdateParkStatusService, PageProcessor {
     private String deliverId;
@@ -29,6 +30,8 @@ public class UpdateParkStatusServiceImpl implements UpdateParkStatusService, Pag
     public UpdateParkStatusServiceImpl() {
     }
 
+
+
     @Override
     public void updateListStatus(String deliverId) {
 
@@ -42,7 +45,7 @@ public class UpdateParkStatusServiceImpl implements UpdateParkStatusService, Pag
     public void process(Page page) {
         String pageNum = page.getHtml().xpath("//*[@id='page_area']/text()").toString();
         if (pageNum != null) {
-            String m = Pattern.compile("[^\\s0-9]").matcher(pageNum).replaceAll("").trim();
+            String m = compile("[^\\s0-9]").matcher(pageNum).replaceAll("").trim();
             System.out.println("m的值是：" + m + ",当前方法=UpdateParkStatusServiceImpl.process()");
             String[] ls = m.split("\\s");
             pages = Integer.valueOf(ls[1]);

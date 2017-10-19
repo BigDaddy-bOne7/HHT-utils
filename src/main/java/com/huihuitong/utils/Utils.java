@@ -10,6 +10,7 @@ public class Utils {
     private static final ServletContext context = ContextLoader.getCurrentWebApplicationContext().getServletContext();
     private static final MybatisDao dao = ContextLoader.getCurrentWebApplicationContext().getBean("mybatisDao",
             MybatisDao.class);
+    public static int temporaryNum = 0;
     public static int page = 1;
     public static int lastPage = 2;
     public static int totalNo = 0;

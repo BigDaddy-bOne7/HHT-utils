@@ -145,7 +145,11 @@ $(function () {
         $.ajax({
                 url: '/getDeclareList',// 跳转到 action
                 type: 'post', // 传输方式
-                data: null,
+            data: {
+                startDate: $_startDate.val().trim(),// 将开始日期转换成字符串 传给后台
+                endDate: $_endDate.val().trim()
+                // 将结束日期转换成字符串 传给后台
+            },
                 async: true, // ajax请求是异步的
                 cache: false,// 缓存ajax结果
                 dataType: 'json',// 接收 数据格式
@@ -216,7 +220,7 @@ $(function () {
             dataType: 'json',// 接收 数据格式
 
             success: function (data) {
-                console.log(data)
+                alert(data.message);
 
             }
         })
@@ -238,7 +242,7 @@ $(function () {
         console.log($_copNo_zu);
 
         if (parseInt($_copNo_zu.length) < 1) {
-            alert("请选择要暂存的订单！");
+            alert("请选择要申报的订单！");
         }
 
         $.ajax({
@@ -253,7 +257,7 @@ $(function () {
             dataType: 'json',// 接收 数据格式
 
             success: function (data) {
-                console.log(data)
+                alert(data.message);
             }
         })
 

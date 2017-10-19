@@ -1,11 +1,9 @@
 package com.huihuitong.web.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.huihuitong.service.DeclareService;
 import com.huihuitong.service.ServiceProcess;
-import com.huihuitong.service.serviceImpl.DeclareServiceImpl;
-import com.huihuitong.service.serviceImpl.ParkLoginServiceImpl;
-import com.huihuitong.service.serviceImpl.UploadServiceImpl;
+import com.huihuitong.service.impl.ParkLoginServiceImpl;
+import com.huihuitong.service.impl.UploadServiceImpl;
 import com.huihuitong.utils.ThreadFactory;
 import com.huihuitong.utils.Utils;
 import org.apache.log4j.Logger;
@@ -13,14 +11,21 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
+/**
+ * @author yangz
+ */
 @Controller
 public class UploadController {
     private static Logger logger = Logger.getLogger(UploadController.class);
 
-    private static void execTask(List<String> uploadList, Class<? extends ServiceProcess> cls) {
+    private static int execTask(List<String> uploadList, Class<? extends ServiceProcess> cls) {
         ThreadPoolExecutor executor = ThreadFactory.init();
 
         for (int i = 0; i < uploadList.size(); i++) {
@@ -30,12 +35,24 @@ public class UploadController {
             logger.info("线程池中线程数目：" + executor.getPoolSize() + "，队列中等待执行的任务数目：" + executor.getQueue().size()
                     + "，已执行完别的任务数目：" + executor.getCompletedTaskCount());
         }
+        executor.shutdown();//只是不能再提交新任务，等待执行的任务不受影响
+
+        try {
+            boolean loop = true;
+            do {    //等待所有任务完成
+                //阻塞，直到线程池里所有任务结束
+                loop = !executor.awaitTermination(2, TimeUnit.SECONDS);
+            } while(loop);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return Utils.temporaryNum;
         // executor.shutdown();
     }
 
     // 上传园区版页面
     @RequestMapping(value = "/uploadList")
-    public String UploadList(HttpServletRequest request) {
+    public String UploadList(HttpServletRequest request, HttpServletResponse response) {
         // 获取登录用户名
         if (request.getSession().getAttribute("userName") == null) {
             return "login";
@@ -47,7 +64,20 @@ public class UploadController {
         List<String> uploadList = JSONObject.parseObject(request.getParameter("copNo"), List.class);
         System.out.println(uploadList);
         // 开启多线程上传到园区版
-        execTask(uploadList, UploadServiceImpl.class);
+        Utils.temporaryNum = 0;
+        int s = execTask(uploadList, UploadServiceImpl.class);
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setCharacterEncoding("utf-8");
+        JSONObject json = new JSONObject();
+        json.put("message","成功暂存了"+s+"单");
+        try {
+            PrintWriter out = response.getWriter();
+            out.println(json.toJSONString());
+            out.flush();
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 
