@@ -15,6 +15,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -24,10 +26,10 @@ import java.util.concurrent.TimeUnit;
 @Controller
 public class UploadController {
     private static Logger logger = Logger.getLogger(UploadController.class);
-
+    static CountDownLatch cdl;
     private static int execTask(List<String> uploadList, Class<? extends ServiceProcess> cls) {
         ThreadPoolExecutor executor = ThreadFactory.init();
-
+        cdl= new CountDownLatch(uploadList.size());
         for (int i = 0; i < uploadList.size(); i++) {
             ServiceTask serviceTask = new ServiceTask(i, uploadList.get(i), cls);
             logger.info("组装线程：" + i);
@@ -35,14 +37,8 @@ public class UploadController {
             logger.info("线程池中线程数目：" + executor.getPoolSize() + "，队列中等待执行的任务数目：" + executor.getQueue().size()
                     + "，已执行完别的任务数目：" + executor.getCompletedTaskCount());
         }
-        executor.shutdown();//只是不能再提交新任务，等待执行的任务不受影响
-
         try {
-            boolean loop = true;
-            do {    //等待所有任务完成
-                //阻塞，直到线程池里所有任务结束
-                loop = !executor.awaitTermination(2, TimeUnit.SECONDS);
-            } while(loop);
+            cdl.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -95,12 +91,15 @@ class ServiceTask implements Runnable {
         this.cls = cls;
     }
 
+    @Override
     public void run() {
         logger.debug("ServiceTask :" + taskNum);
         try {
             cls.newInstance().execute(copNo);
         } catch (InstantiationException | IllegalAccessException e) {
             logger.debug(e);
+        }finally {
+            UploadController.cdl.countDown();
         }
 
     }

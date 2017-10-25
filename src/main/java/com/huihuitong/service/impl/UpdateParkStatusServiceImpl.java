@@ -20,7 +20,7 @@ public class UpdateParkStatusServiceImpl implements UpdateParkStatusService, Pag
     private UpdateParkStatusServiceImpl(String deliverId) {
         this.deliverId = deliverId;
         String cookie = Utils.getMybatisDao().getParkCookie();
-        this.site = Site.me().setRetryTimes(10).setSleepTime(3 * 1000).setTimeOut(100000).setCharset("GBK")
+        this.site = Site.me().setRetryTimes(10).setSleepTime(500).setTimeOut(100000).setCharset("GBK")
                 .addHeader("Cookie", "JSESSIONID=" + cookie)
                 .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36")
                 .addHeader("Upgrade-Insecure-Requests", "1")
@@ -38,7 +38,7 @@ public class UpdateParkStatusServiceImpl implements UpdateParkStatusService, Pag
         Spider.create(new UpdateParkStatusServiceImpl(deliverId))
                 .addUrl("http://pub.szcport.cn/bbmi/bbmStoreFormHeadQQuery.action?bbmStoreFormHeadQueryBean.formType=E11W" +
                         "&bbmStoreFormHeadQueryBean.trafNo=" + deliverId)
-                .thread(10).run();
+                .thread(20).run();
     }
 
     @Override

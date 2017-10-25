@@ -1,6 +1,7 @@
 package com.huihuitong.utils;
 
 import com.huihuitong.dao.MybatisDao;
+import com.huihuitong.dao.YibaoDao;
 import org.springframework.web.context.ContextLoader;
 
 import javax.servlet.ServletContext;
@@ -10,6 +11,8 @@ public class Utils {
     private static final ServletContext context = ContextLoader.getCurrentWebApplicationContext().getServletContext();
     private static final MybatisDao dao = ContextLoader.getCurrentWebApplicationContext().getBean("mybatisDao",
             MybatisDao.class);
+    private static final YibaoDao YIBAO_DAO = ContextLoader.getCurrentWebApplicationContext().getBean("yibaoDao",
+            YibaoDao.class);
     public static int temporaryNum = 0;
     public static int page = 1;
     public static int lastPage = 2;
@@ -24,6 +27,10 @@ public class Utils {
 
     public static MybatisDao getMybatisDao() {
         return dao;
+    }
+
+    public static YibaoDao getYibaoDao() {
+        return YIBAO_DAO;
     }
 
     public static String MD5(String s) {

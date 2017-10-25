@@ -308,8 +308,21 @@ $(function () {
     var $_zancunyuanquban_but = $(".yuanquban_dairu .anniu_yuanquban_tijiao"); // 园区版
     var $_declareButton = $(".yuanquban_dairu .anniu_yuanquban_shanbao");
     var $_button_totalTax = $(".yuanquban_dairu .button_totalTax");
+    var $_button_parkUpdate = $(".yuanquban_dairu .button_parkUpdate");
     // 暂存
     // 按钮
+    $_button_parkUpdate.click(function () {
+        $.ajax({
+            url: '/updateParkStatus',// 跳转到 action
+            type: 'post', // 传输方式
+            data: null,
+            async: true, // ajax请求是异步的
+            cache: false,// 不缓存ajax结果
+            dataType: 'json',// 接收 数据格式
+            success: function (data) {
+            }
+        })
+    });
 
     $_zancunyuanquban_but.click(function () { // 暂存园区版
         huoqu_neibuhao_neibuhao();

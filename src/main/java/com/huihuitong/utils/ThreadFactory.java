@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 
 public class ThreadFactory {
     public static final int POOLSIZE = 5;
-    public static final int MAXPOOLSIZE = 15;
+    public static final int MAXPOOLSIZE = 10;
     public static final int ALIVETIME = 200;
     public static final int QUEUESIZE = 1000;
     private static ThreadPoolExecutor threadPoolExecutor;

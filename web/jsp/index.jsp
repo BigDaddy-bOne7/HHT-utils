@@ -70,6 +70,7 @@
             <input type="submit" class="anniu_yuanquban_tijiao" value="暂 存">
             <input type="submit" class="anniu_yuanquban_shanbao" value="申 报">
             <input type="submit" class="button_totalTax" value="统计税金">
+            <input type="submit" class="button_parkUpdate" value="更新园区版状态">
         </div>
         <p class="p">
             <span class="span">数量：</span><span class="span shuliang">10000</span><span

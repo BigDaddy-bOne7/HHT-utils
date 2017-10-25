@@ -8,6 +8,7 @@ import com.huihuitong.service.DeclareService;
 import com.huihuitong.service.impl.DeclareServiceImpl;
 import com.huihuitong.service.impl.DownloadServiceImpl;
 import com.huihuitong.service.impl.ParkLoginServiceImpl;
+import com.huihuitong.utils.ExpireJobTask;
 import com.huihuitong.utils.Utils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +37,11 @@ public class HomeController {
             return "index";
         }
 
+    }
+
+    @RequestMapping(value = "/updateParkStatus")
+    public void updateParkStatus() {
+        ExpireJobTask.doBiz();
     }
 
     @RequestMapping(value = "/index")

@@ -30,7 +30,7 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
 
     private GetOrderInfoService orderService = new GetOrderInfoServiceImpl();
     private GetFormIdService formService = new GetFormIdServiceImpl();
-
+    DecimalFormat df = new DecimalFormat("#0.0000");
     @Override
     public String execute(String copNo) {
         if (Utils.getMybatisDao().getStatus(copNo) == 1) {
@@ -62,10 +62,10 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
 
         String formId = null;
         int n = 0;
-        while (formId == null && n < 5) {
+        while (formId == null && n < 10) {
             // 延时1秒
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -112,8 +112,8 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
         formparams.add(new BasicNameValuePair("storeFormHead.trafMode", "Y"));
         formparams.add(new BasicNameValuePair("storeFormHead.wrapType", "2"));
         formparams.add(new BasicNameValuePair("storeFormHead.packNo", "1"));
-        formparams.add(new BasicNameValuePair("storeFormHead.grossWt", orderHeader.getGrossWeight() + ""));
-        formparams.add(new BasicNameValuePair("storeFormHead.netwet", orderHeader.getNetWeight() + ""));
+        formparams.add(new BasicNameValuePair("storeFormHead.grossWt", df.format(orderHeader.getGrossWeight()) + ""));
+        formparams.add(new BasicNameValuePair("storeFormHead.netwet", df.format(orderHeader.getNetWeight()) + ""));
         formparams.add(new BasicNameValuePair("storeFormHead.fee", "0.0"));
         formparams.add(new BasicNameValuePair("storeFormHead.insur", "0.0"));
         formparams.add(new BasicNameValuePair("storeFormHead.tradeCountry", "142"));
@@ -186,7 +186,6 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
         formparams.add(new BasicNameValuePair("relation.GUnit", orderDetail.getUnit()));
         formparams.add(new BasicNameValuePair("relation.declTotal", orderDetail.getTotalPrice()));
         formparams.add(new BasicNameValuePair("relation.curr", "142"));
-        DecimalFormat df = new DecimalFormat("#0.00");
         double qty1 = Integer.valueOf(orderDetail.getQty())*Double.valueOf(orderDetail.getQty1());
         formparams.add(new BasicNameValuePair("relation.qty1", df.format(qty1)+""));
         formparams.add(new BasicNameValuePair("relation.unit1", "035"));

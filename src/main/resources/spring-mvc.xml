@@ -30,27 +30,27 @@
         <property name="prefix" value="/jsp/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
-    <!--<bean id="executor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">-->
-        <!--<property name="corePoolSize" value="10" />-->
-        <!--<property name="maxPoolSize" value="100" />-->
-        <!--<property name="queueCapacity" value="500" />-->
-    <!--</bean>-->
-    <!--<bean id="bizObject" class="com.huihuitong.utils.ExpireJobTask" />-->
-    <!--<bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">-->
-        <!--<property name="targetObject" ref="bizObject" />-->
-        <!--<property name="targetMethod" value="doBiz" />-->
-    <!--</bean>-->
-    <!--<bean id="taskTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">-->
-        <!--<property name="jobDetail" ref="jobDetail" />-->
-        <!--<property name="startDelay" value="100000" />-->
-        <!--<property name="repeatInterval" value="1200000" />-->
-    <!--</bean>-->
-    <!--<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">-->
-        <!--<property name="triggers">-->
-            <!--<list>-->
-                <!--<ref bean="taskTrigger" />-->
-            <!--</list>-->
-        <!--</property>-->
-        <!--<property name="taskExecutor" ref="executor" />-->
-    <!--</bean>-->
+    <bean id="executor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+        <property name="corePoolSize" value="10" />
+        <property name="maxPoolSize" value="100" />
+        <property name="queueCapacity" value="500" />
+    </bean>
+    <bean id="bizObject" class="com.huihuitong.utils.ExpireJobTask" />
+    <bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+        <property name="targetObject" ref="bizObject" />
+        <property name="targetMethod" value="doBiz" />
+    </bean>
+    <bean id="taskTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+        <property name="jobDetail" ref="jobDetail" />
+        <property name="startDelay" value="60000" />
+        <property name="repeatInterval" value="1800000" />
+    </bean>
+    <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+        <property name="triggers">
+            <list>
+                <ref bean="taskTrigger" />
+            </list>
+        </property>
+        <property name="taskExecutor" ref="executor" />
+    </bean>
 </beans>

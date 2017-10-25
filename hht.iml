@@ -95,5 +95,6 @@
     <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.28" level="project" />
     <orderEntry type="library" name="Maven: us.codecraft:webmagic-extension:0.7.1" level="project" />
     <orderEntry type="library" name="Maven: redis.clients:jedis:2.9.0" level="project" />
+    <orderEntry type="library" name="ehking-sdk-core-3.0" level="project" />
   </component>
 </module>

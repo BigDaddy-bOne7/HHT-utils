@@ -49,7 +49,7 @@ public interface MybatisDao {
             "cc.companyName AS CopName, " +
             "oh.TotalQty AS packNo, " +
             "ohc.TotalGrossWeight AS grossWeight, " +
-            "odc.NetWeight AS netWeight, " +
+            "SUM(odc.NetWeight) AS netWeight, " +
             "ohc.BuyerID AS buyerName, " +
             "oh.ShipToCity AS consigneeCity, " +
             "ohc.PaperNumber AS buyerIdNumber, " +
@@ -80,13 +80,14 @@ public interface MybatisDao {
             "id.Models AS gmodel, " +
             "od.RequestQty AS qty, " +
             "i.UnitDesc AS unit, " +
-            "od.ItemListPrice AS totalPrice, " +
+            "odc.TradeTotalPrice AS totalPrice, " +
             "id.Property AS qty1, " +
             "id.OriginCode AS oriCountry " +
             "FROM " +
             "order_detail AS od " +
             "INNER JOIN item_declare AS id ON od.UserDef5 = id.DeclItemCode " +
             "INNER JOIN item AS i ON od.UserDef5 = i.ParentCode " +
+            "INNER JOIN order_detail_custom AS odc ON odc.Id = od.id " +
             "WHERE " +
             "od.OrderId = #{id} " +
             "GROUP BY " +
@@ -139,4 +140,6 @@ public interface MybatisDao {
     // 获取园区版所需企业备案名称
     @Select("select cusCode from spider_user where orgCode = #{orgCode}")
     String getCusCode(@Param("orgCode") String orgCode);
+
+
 }

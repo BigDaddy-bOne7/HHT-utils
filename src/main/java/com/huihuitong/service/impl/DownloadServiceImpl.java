@@ -15,7 +15,12 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.huihuitong.utils.Utils.*;
 
+
+/**
+ * @author yangz
+ */
 public class DownloadServiceImpl implements DownloadService, PageProcessor {
     // 获取全局变量
     private String uniteCookie;
@@ -33,7 +38,7 @@ public class DownloadServiceImpl implements DownloadService, PageProcessor {
     }
 
     private DownloadServiceImpl(String userName, LocalDate startDate, LocalDate endDate) {
-        this.user = Utils.getMybatisDao().getUser(userName);
+        this.user = getMybatisDao().getUser(userName);
         this.uniteCookie = user.getUniteCookie();
         this.StartDate = startDate;
         this.EndDate = endDate;
@@ -50,23 +55,22 @@ public class DownloadServiceImpl implements DownloadService, PageProcessor {
     public void downLoad(String userName, LocalDate startDate, LocalDate endDate) {
         new com.huihuitong.service.impl.UniteLoginServiceImpl().login(userName);
         System.out.println("1的值是：" + 1 + ",当前方法=DownloadServiceImpl.downLoad()");
-        user = Utils.getMybatisDao().getUser(userName);
+        user = getMybatisDao().getUser(userName);
         uniteCookie = user.getUniteCookie();
         System.out.println("cookie:" + uniteCookie);
         StartDate = (startDate == null) ? LocalDate.now() : startDate;
         EndDate = (endDate == null) ? LocalDate.now() : endDate;
-        Utils.totalNo = 0;
-        Utils.presentNo = 0;
+        totalNo = 0;
+        presentNo = 0;
         Spider.create(new DownloadServiceImpl(userName, startDate, endDate))
                 .addUrl("http://www.szceb.cn/goodsBill.do?method=searchGoodsBillStatus&page=1" + "&cusStatus=31"
                         + "&qdateType=1&strCreateStartTime=" + StartDate + "&strCreateEndTime=" + EndDate)
                 .thread(20).run();
         System.out.println("quest complete!");
-        Utils.page = 1;
+        page = 1;
     }
 
     @Override
-    @Transactional
     public void process(Page page) {
         // 获取页面数量，存为Utils.lastPage
         String pageNo = page.getHtml()
@@ -74,12 +78,12 @@ public class DownloadServiceImpl implements DownloadService, PageProcessor {
                 .toString();
         if (pageNo != null) {
             if ("没有找到任何数据".equals(pageNo.trim())) {
-                Utils.page = Utils.lastPage + 1;
+                Utils.page = lastPage + 1;
             } else {
                 String m = Pattern.compile("[^,0-9]").matcher(pageNo).replaceAll("").trim();
                 String[] ls = m.split(",");
-                Utils.lastPage = Integer.valueOf(ls[1]);
-                Utils.totalNo = Integer.valueOf(ls[0]);
+                lastPage = Integer.valueOf(ls[1]);
+                totalNo = Integer.valueOf(ls[0]);
             }
         }
         // 爬取内部编号，清单编号，存为2个数组
@@ -102,17 +106,16 @@ public class DownloadServiceImpl implements DownloadService, PageProcessor {
             lns.setLogisticsNo(logisticsNo.get(i + 1).trim());
             lns.setOrderNo(orderNo.get(i + 1).trim());
             String date1 = date.get(i+1).substring(0,date.get(i+1).indexOf(" "));
-            System.out.println("date1的值是：" + date1 + ",当前方法=DownloadServiceImpl.process()");
             lns.setDate(Date.valueOf(date1));
             lns.setStatus(1);
-            ListStatus listStatus = Utils.getMybatisDao().getListStatusByCopNo(copNo.get(i).trim());
+            ListStatus listStatus = getMybatisDao().getListStatusByCopNo(copNo.get(i).trim());
             if (listStatus == null) {
-                Utils.getMybatisDao().insertListStatus(lns);
+                getMybatisDao().insertListStatus(lns);
             }
-            Utils.presentNo++;
-            System.out.println(Utils.presentNo + "/" + Utils.totalNo);
+            presentNo++;
+            System.out.println(presentNo + "/" + totalNo);
         }
-        while (Utils.page <= Utils.lastPage) {
+        while (Utils.page <= lastPage) {
             page.addTargetRequest("http://www.szceb.cn/goodsBill.do?method=searchGoodsBillStatus&page=" + Utils.page++
                     + "&cusStatus=31" + "&qdateType=1&strCreateStartTime=" + StartDate + "&strCreateEndTime="
                     + EndDate);

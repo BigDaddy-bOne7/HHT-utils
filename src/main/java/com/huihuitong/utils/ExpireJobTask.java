@@ -1,5 +1,6 @@
 package com.huihuitong.utils;
 
+import com.ehking.sdk.entity.CustomsInfo;
 import com.huihuitong.service.UpdateParkStatusService;
 import com.huihuitong.service.impl.UpdateParkStatusServiceImpl;
 import org.slf4j.Logger;
@@ -14,14 +15,13 @@ import java.util.List;
 public class ExpireJobTask {
     private static final Logger logger = LoggerFactory.getLogger(ExpireJobTask.class);
 
-    public void doBiz() {
+    public static void doBiz() {
         // 执行业务逻辑
         UpdateParkStatusService service = new UpdateParkStatusServiceImpl();
         List<String> deliverIds = Utils.getMybatisDao().listDeliverId();
         for (String id : deliverIds) {
                 logger.info("正在更新" + id);
                 service.updateListStatus(id);
-
         }
     }
 }
