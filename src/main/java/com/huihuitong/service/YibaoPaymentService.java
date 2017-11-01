@@ -1,5 +1,8 @@
 package com.huihuitong.service;
 
+import com.huihuitong.meta.QueryConfig;
+import com.huihuitong.meta.YibaoPaymentOrderInfo;
+
 import java.util.List;
 
 /**
@@ -9,13 +12,11 @@ import java.util.List;
  */
 public interface YibaoPaymentService {
     /**
-     * 列出某一时间段订单列表
-     * @param startDate 开始时间
-     * @param endDate 结束时间
-     * @return List<orderId> 返回订单列表
-     *
+     * 获取需要发送支付报文的订单号
+     * @param config 查询设置
+     * @return 订单号列表
      */
-    List<String> listOrders(String startDate,String endDate);
+    List<YibaoPaymentOrderInfo> listOrders(QueryConfig config);
 
     /**
      * 发送订单信息到易宝接口

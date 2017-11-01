@@ -2,6 +2,9 @@ package com.huihuitong.meta;
 
 import org.springframework.stereotype.Repository;
 
+/**
+ * @author yangz
+ */
 @Repository
 public class User {
     private int id;

@@ -48,7 +48,7 @@ public class UploadController {
 
     // 上传园区版页面
     @RequestMapping(value = "/uploadList")
-    public String UploadList(HttpServletRequest request, HttpServletResponse response) {
+    public String uploadList(HttpServletRequest request, HttpServletResponse response) {
         // 获取登录用户名
         if (request.getSession().getAttribute("userName") == null) {
             return "login";
@@ -101,6 +101,5 @@ class ServiceTask implements Runnable {
         }finally {
             UploadController.cdl.countDown();
         }
-
     }
 }

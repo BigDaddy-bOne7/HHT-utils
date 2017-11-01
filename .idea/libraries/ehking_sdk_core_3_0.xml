@@ -4,6 +4,8 @@
       <root url="jar://D:/Repositories/ehking-sdk-core-3.0.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES />
+    <SOURCES>
+      <root url="jar://D:/Repositories/ehking-sdk-core-3.0.jar!/" />
+    </SOURCES>
   </library>
 </component>

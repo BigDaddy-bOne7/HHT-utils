@@ -23,6 +23,9 @@ import java.time.LocalDate;
 import java.util.List;
 
 
+/**
+ * @author yangz
+ */
 @Controller
 public class HomeController {
 
@@ -30,13 +33,12 @@ public class HomeController {
 
     // 首页
     @RequestMapping(value = "/")
-    public String LoginPage(HttpServletRequest request) {
+    public String loginPage(HttpServletRequest request) {
         if (request.getSession().getAttribute("userName") == null) {
             return "login";
         } else {
             return "index";
         }
-
     }
 
     @RequestMapping(value = "/updateParkStatus")
@@ -45,19 +47,19 @@ public class HomeController {
     }
 
     @RequestMapping(value = "/index")
-    public String HomePage(HttpServletRequest request) {
+    public String homePage(HttpServletRequest request) {
         if (request.getSession().getAttribute("userName") == null) {
             return "login";
         } else {
             return "index";
         }
-
     }
 
     @RequestMapping(value = "/download")
     @ResponseBody
-    public String Download(HttpServletRequest request, HttpServletResponse response) {
-        if (request.getSession().getAttribute("userName") == null) {
+    public String download(HttpServletRequest request, HttpServletResponse response) {
+        String userName = request.getSession().getAttribute("userName").toString();
+        if (userName == null) {
             return "login";
         }
 
@@ -73,7 +75,7 @@ public class HomeController {
             PrintWriter out = response.getWriter();
             if (!isRunning) {
                 isRunning = true;
-                new DownloadServiceImpl().downLoad("yangzhao", startDate, endDate);
+                new DownloadServiceImpl().downLoad(userName, startDate, endDate);
                 isRunning = false;
                 code = 200;
                 message = "获取完毕！";
@@ -199,7 +201,7 @@ public class HomeController {
         return null;
     }
     @RequestMapping(value = "/declareList")
-    public String DeclareList(HttpServletRequest request,HttpServletResponse response) {
+    public String declareList(HttpServletRequest request,HttpServletResponse response) {
         // 获取登录用户名
         if (request.getSession().getAttribute("userName") == null) {
             return "login";

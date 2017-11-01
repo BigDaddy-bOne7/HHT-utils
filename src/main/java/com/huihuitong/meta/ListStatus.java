@@ -4,6 +4,9 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.Date;
 
+/**
+ * @author yangz
+ */
 @Repository
 public class ListStatus {
     private int id;

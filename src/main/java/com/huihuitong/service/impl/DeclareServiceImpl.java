@@ -71,9 +71,7 @@ public class DeclareServiceImpl implements DeclareService {
                 HttpEntity entity = response.getEntity();
                 if (entity != null) {
                     Html html = Html.create(EntityUtils.toString(entity, "UTF-8"));
-                    System.out.println(html);
                     token = html.xpath("//*[@id=\"head_list\"]/input[4]//@value").toString();
-                    System.out.println(token);
 
                 }
             }

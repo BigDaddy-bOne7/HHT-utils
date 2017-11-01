@@ -2,10 +2,10 @@ package com.huihuitong.meta;
 
 import org.springframework.stereotype.Repository;
 
-/*
-订单详情：
-从ECM数据库获取，用于园区版报关
-    */
+/**
+ * 订单详情：从ECM数据库获取，用于园区版报关
+ * @author yangz
+ */
 @Repository
 public class OrderDetail {
     private String itemRecordNo;
@@ -23,19 +23,39 @@ public class OrderDetail {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         OrderDetail that = (OrderDetail) o;
 
-        if (itemRecordNo != null ? !itemRecordNo.equals(that.itemRecordNo) : that.itemRecordNo != null) return false;
-        if (gcode != null ? !gcode.equals(that.gcode) : that.gcode != null) return false;
-        if (gname != null ? !gname.equals(that.gname) : that.gname != null) return false;
-        if (gmodel != null ? !gmodel.equals(that.gmodel) : that.gmodel != null) return false;
-        if (qty != null ? !qty.equals(that.qty) : that.qty != null) return false;
-        if (unit != null ? !unit.equals(that.unit) : that.unit != null) return false;
-        if (totalPrice != null ? !totalPrice.equals(that.totalPrice) : that.totalPrice != null) return false;
-        if (qty1 != null ? !qty1.equals(that.qty1) : that.qty1 != null) return false;
+        if (itemRecordNo != null ? !itemRecordNo.equals(that.itemRecordNo) : that.itemRecordNo != null) {
+            return false;
+        }
+        if (gcode != null ? !gcode.equals(that.gcode) : that.gcode != null) {
+            return false;
+        }
+        if (gname != null ? !gname.equals(that.gname) : that.gname != null) {
+            return false;
+        }
+        if (gmodel != null ? !gmodel.equals(that.gmodel) : that.gmodel != null) {
+            return false;
+        }
+        if (qty != null ? !qty.equals(that.qty) : that.qty != null) {
+            return false;
+        }
+        if (unit != null ? !unit.equals(that.unit) : that.unit != null) {
+            return false;
+        }
+        if (totalPrice != null ? !totalPrice.equals(that.totalPrice) : that.totalPrice != null) {
+            return false;
+        }
+        if (qty1 != null ? !qty1.equals(that.qty1) : that.qty1 != null) {
+            return false;
+        }
         return oriCountry != null ? oriCountry.equals(that.oriCountry) : that.oriCountry == null;
     }
 

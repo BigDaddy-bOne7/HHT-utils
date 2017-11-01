@@ -16,14 +16,16 @@ public class OrderInfo {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
 
         OrderInfo orderInfo = (OrderInfo) o;
 
-        if (orderHeader != null ? !orderHeader.equals(orderInfo.orderHeader) : orderInfo.orderHeader != null)
-            return false;
-        return orderDetails != null ? orderDetails.equals(orderInfo.orderDetails) : orderInfo.orderDetails == null;
+        return (orderHeader != null ? orderHeader.equals(orderInfo.orderHeader) : orderInfo.orderHeader == null) && (orderDetails != null ? orderDetails.equals(orderInfo.orderDetails) : orderInfo.orderDetails == null);
     }
 
     @Override

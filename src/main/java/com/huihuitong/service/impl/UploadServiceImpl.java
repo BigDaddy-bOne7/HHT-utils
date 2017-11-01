@@ -9,6 +9,7 @@ import com.huihuitong.service.GetOrderInfoService;
 import com.huihuitong.service.ServiceProcess;
 import com.huihuitong.service.UploadService;
 import com.huihuitong.utils.Utils;
+import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
@@ -20,6 +21,7 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 
+import javax.swing.plaf.synth.SynthOptionPaneUI;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -81,14 +83,15 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
         // 上传表体信息
         List<OrderDetail> orderDetails = orderInfo.getOrderDetails();
         for (OrderDetail orderDetail : orderDetails) {
-            System.out.println(formId + "....." + orderDetail.getGname());
-            uploadBody(orderDetail, formId, orderHeader.getOrgCode());
-            // 延时0.5秒
+            // 延时1秒
             try {
-                Thread.sleep(500);
+                Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            System.out.println(formId + "....." + orderDetail.getGname());
+            uploadBody(orderDetail, formId, orderHeader.getOrgCode());
+
         }
         // 更新数据库状态
         Utils.getMybatisDao().updateListStatus(copNo, 2);
@@ -201,12 +204,12 @@ public class UploadServiceImpl implements UploadService, ServiceProcess {
         try {
             uefEntity = new UrlEncodedFormEntity(formparams, "GBK");
             httpPost.setEntity(uefEntity);
-
             System.out.println("executing request " + httpPost.getURI());
             try (CloseableHttpResponse response = httpclient.execute(httpPost)) {
-                HttpEntity entity = response.getEntity();
-                if (entity != null) {
-                    System.out.println("Response content: " + EntityUtils.toString(entity, "UTF-8"));
+                String redirectUrl = "Location: http://pub.szcport.cn/bbmi/queryImOLShoppingOutRelations.action";
+                System.out.println("的值是：" + response.getFirstHeader("Location").toString() + ",当前方法=UploadServiceImpl.uploadBody()");
+                if(!redirectUrl.equals(response.getFirstHeader("Location").toString())){
+                    uploadBody(orderDetail,formId,cusCode);
                 }
             }
         } catch (IOException e) {

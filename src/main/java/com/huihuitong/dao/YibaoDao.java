@@ -1,8 +1,10 @@
 package com.huihuitong.dao;
 
-import com.huihuitong.meta.CustomsInfo;
-import com.huihuitong.meta.Payer;
-import com.huihuitong.meta.ProductDetail;
+import com.ehking.sdk.entity.CustomsInfo;
+import com.ehking.sdk.entity.Payer;
+import com.ehking.sdk.entity.ProductDetail;
+import com.huihuitong.meta.QueryConfig;
+import com.huihuitong.meta.YibaoPaymentOrderInfo;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
@@ -14,15 +16,57 @@ import java.util.List;
  * @date 2017/10/24 16:10:15
  */
 public interface YibaoDao {
+
     /**
-     * 获取所需时间段内需要发送支付报文的订单号
-     * @param startDate 开始时间
-     * @param endDate 结束时间
+     * 获取需要发送支付报文的订单号
+     * @param config 货主编码
      * @return 订单号列表
      */
-    @Select("SELECT OrderCode FROM order_header WHERE TradeCreateDateTime BETWEEN '#{startDate} 00:00:00' " +
-            "AND '#{endDate} 23:59:59' AND Status != 950")
-    List<String> listOrders(@Param("startDate") String startDate,@Param("endDate") String endDate);
+    @Select("SELECT " +
+            "oh.OrderCode AS orderCode, " +
+            "oh.CompanyCode AS companyCode, " +
+            "oh.SecondaryWayBillCode AS deliverId, " +
+            "oh.PrimaryWayBillCode AS logisticsNo, " +
+            "oh.TotalValue AS amount, " +
+            "IFNULL(sys.`status`,'未发送') AS `status`, " +
+            "oh.TradeCreateDateTime AS createTime " +
+            "FROM " +
+            "order_header AS oh " +
+            "LEFT JOIN spider_yibao_status AS sys ON oh.OrderCode = sys.orderCode " +
+            "WHERE " +
+            "oh.`Status` != 950 AND " +
+            "oh.`Status` != 100 AND " +
+            "(oh.CompanyCode = #{companyCode} OR " +
+            "IFNULL(" +
+            "#{companyCode}, " +
+            "'null' " +
+            ") = 'null') AND " +
+            "(oh.SecondaryWayBillCode=#{deliverId} OR " +
+            "IFNULL(" +
+            "#{deliverId}, " +
+            "'null' " +
+            ") = 'null') AND " +
+            "(oh.OrderCode=#{orderCode} OR " +
+            "IFNULL(" +
+            "#{orderCode}, " +
+            "'null' " +
+            ") = 'null') AND " +
+            "(oh.PrimaryWayBillCode=#{logisticsNo} OR " +
+            "IFNULL(" +
+            "#{logisticsNo}, " +
+            "'null' " +
+            ") = 'null') AND " +
+            "(oh.TradeCreateDateTime > #{startDate} OR " +
+            "IFNULL(" +
+            "#{startDate}, " +
+            "'null'" +
+            ") = 'null') AND " +
+            "(oh.TradeCreateDateTime < #{endDate} OR " +
+            "IFNULL(" +
+            "#{endDate}, " +
+            "'null'" +
+            ") = 'null')")
+    List<YibaoPaymentOrderInfo> listOrders(QueryConfig config);
 
     /**
      * 通过订单号获取商品信息
@@ -32,14 +76,14 @@ public interface YibaoDao {
     @Select("SELECT " +
             "id.GoodsName AS `name`, " +
             "od.RequestQty AS quantity, " +
-            "FORMAT(od.ItemListPrice,2)*100 AS amount, " +
+            "ROUND(od.ItemListPrice * 100) AS amount, " +
             "'深圳市汇惠通电子商务有限公司' AS receiver, " +
             "od.ItemDesc AS description " +
             "FROM " +
             "order_header AS oh " +
             "RIGHT JOIN order_detail AS od ON oh.Id = od.OrderId " +
             "LEFT JOIN item_declare AS id ON id.DeclItemCode = od.UserDef5 " +
-            "WHERE oh.Id = #{orderCode}")
+            "WHERE oh.orderCode = #{orderCode}")
     List<ProductDetail> getProductDetails(@Param("orderCode") String orderCode);
 
     /**
@@ -69,15 +113,30 @@ public interface YibaoDao {
      */
     @Select("SELECT " +
             "'OFFICAL' AS customsChannel, " +
-            "oh.Tax AS tax, " +
-            "4403660098 AS merchantCommerceCode, " +
-            "'深圳市汇惠通电子商务有限公司' AS merchantCommerceName, " +
+            "ROUND(ohc.OrderGoodsAmount * 100) AS goodsAmount, " +
+            "ROUND(oh.Tax * 100) AS tax, " +
+            "cc.companyCode AS merchantCommerceCode, " +
+            "cc.eCommerceName AS merchantCommerceName, " +
             "oh.WarehouseCode AS storeHouse, " +
-            "5349 AS customsCode " +
-            "471800 AS ciqCode " +
+            "'5349' AS customsCode, " +
+            "'471800' AS ciqCode, " +
+            "'BBC' AS functionCode, " +
+            "'B2B2C' AS businessType " +
             "FROM " +
             "order_header AS oh " +
+            "INNER JOIN order_header_custom AS ohc ON oh.OrderCode = ohc.OrderCode " +
+            "INNER JOIN company AS c ON oh.CompanyCode = c.CompanyCode " +
+            "INNER JOIN company_custom AS cc ON c.Id = cc.Id " +
             "WHERE " +
             "oh.OrderCode = #{orderCode}")
     CustomsInfo getCustomsInfo(@Param("orderCode") String orderCode);
+
+    /**
+     * 通过订单号查询订单金额
+     * @param orderCode 订单号
+     * @return 订单金额
+     */
+    @Select("SELECT ROUND(TotalAmount * 100) FROM `order_header_custom` WHERE OrderCode = #{orderCode}")
+    Long getOrderAmount(@Param("orderCode") String orderCode);
+
 }

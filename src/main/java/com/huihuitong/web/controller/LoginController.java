@@ -12,11 +12,14 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 
+/**
+ * @author yangz
+ */
 @Controller
 public class LoginController {
     // 登陆页面
     @RequestMapping(value = "/login")
-    public String Login(HttpServletRequest request) {
+    public String login(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         // 若有session,已登陆,跳转到index
         if (session.getAttribute("User") != null) {
@@ -28,7 +31,7 @@ public class LoginController {
 
     // 登出按钮
     @RequestMapping(value = "/logout")
-    public String Logout(HttpServletRequest request) {
+    public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession(true);
         // 使session失效
         session.invalidate();
@@ -37,7 +40,7 @@ public class LoginController {
 
     // 登陆按钮
     @RequestMapping(value = "/loginService")
-    public void LoginService(HttpServletRequest request, HttpServletResponse response) {
+    public void loginService(HttpServletRequest request, HttpServletResponse response) {
         // 读取表单中的账号密码
         try {
         String userName = request.getParameter("userName");
@@ -56,7 +59,7 @@ public class LoginController {
 
 
 
-        if (userName.equals("")) {
+        if ("".equals(userName)) {
             code = 400;
             message = "用户名为空！";
         } else {

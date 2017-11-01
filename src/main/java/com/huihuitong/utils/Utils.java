@@ -7,9 +7,12 @@ import org.springframework.web.context.ContextLoader;
 import javax.servlet.ServletContext;
 import java.security.MessageDigest;
 
+/**
+ * @author yangz
+ */
 public class Utils {
-    private static final ServletContext context = ContextLoader.getCurrentWebApplicationContext().getServletContext();
-    private static final MybatisDao dao = ContextLoader.getCurrentWebApplicationContext().getBean("mybatisDao",
+    private static final ServletContext CONTEXT = ContextLoader.getCurrentWebApplicationContext().getServletContext();
+    private static final MybatisDao DAO = ContextLoader.getCurrentWebApplicationContext().getBean("mybatisDao",
             MybatisDao.class);
     private static final YibaoDao YIBAO_DAO = ContextLoader.getCurrentWebApplicationContext().getBean("yibaoDao",
             YibaoDao.class);
@@ -22,19 +25,19 @@ public class Utils {
     public static String uniteAccount = "";
 
     public static ServletContext getContext() {
-        return context;
+        return CONTEXT;
     }
 
     public static MybatisDao getMybatisDao() {
-        return dao;
+        return DAO;
     }
 
     public static YibaoDao getYibaoDao() {
         return YIBAO_DAO;
     }
 
-    public static String MD5(String s) {
-        char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    public static String md5(String s) {
+        char[] hexDigits = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
         try {
             byte[] btInput = s.getBytes();
             // 获得MD5摘要算法的 MessageDigest 对象
@@ -47,8 +50,7 @@ public class Utils {
             int j = md.length;
             char str[] = new char[j * 2];
             int k = 0;
-            for (int i = 0; i < j; i++) {
-                byte byte0 = md[i];
+            for (byte byte0 : md) {
                 str[k++] = hexDigits[byte0 >>> 4 & 0xf];
                 str[k++] = hexDigits[byte0 & 0xf];
             }

@@ -21,14 +21,15 @@
     <mvc:resources mapping="/js/**" location="/js/"/>
     <mvc:resources mapping="/css/**" location="/css/"/>
     <mvc:resources mapping="/swiper/**" location="/swiper/"/>
-    <mvc:resources location="/html/" mapping="/**/*.html"/>
+    <mvc:resources location="/" mapping="/**/*.html"/>
 
     <!-- 定义跳转的文件的前后缀 ，视图模式配置 -->
     <bean id="viewResolver"
           class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <!-- 这里的配置我的理解是自动给后面action的方法return的字符串加上前缀和后缀，变成一个 可用的url地址 -->
-        <property name="prefix" value="/jsp/"/>
-        <property name="suffix" value=".jsp"/>
+        <property name="prefix" value="/html/"/>
+        <property name="suffix" value=".html"/>
+        <property name="contentType" value="text/html;charset=UTF-8"/>
     </bean>
     <bean id="executor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
         <property name="corePoolSize" value="10" />
@@ -42,7 +43,7 @@
     </bean>
     <bean id="taskTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
         <property name="jobDetail" ref="jobDetail" />
-        <property name="startDelay" value="60000" />
+        <property name="startDelay" value="600000" />
         <property name="repeatInterval" value="1800000" />
     </bean>
     <bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">

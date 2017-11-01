@@ -43,11 +43,10 @@ public class UniteLoginServiceImpl implements UniteLoginService {
         httpPost.addHeader("Content-Type","application/x-www-form-urlencoded");
         httpPost.addHeader("DNT","1");
         httpPost.addHeader("Cookie","JSESSIONID="+user.getUniteCookie());
-//        httpPost.addHeader("Content-Length","52");
         httpPost.addHeader("Host","www.szceb.cn");
         httpPost.addHeader("Origin","http://www.szceb.cn");
         httpPost.addHeader("Proxy-Connection","keep-alive");
-        httpPost.addHeader("Referer","http://www.szceb.cn/login.jsp");
+        httpPost.addHeader("Referer","http://www.szceb.cn/login.html");
         httpPost.addHeader("Upgrade-Insecure-Requests","1");
         httpPost.addHeader("User-Agent","Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
         List<NameValuePair> formparams = new ArrayList<>();
@@ -58,11 +57,10 @@ public class UniteLoginServiceImpl implements UniteLoginService {
         try {
             uefEntity = new UrlEncodedFormEntity(formparams, "GBK");
             httpPost.setEntity(uefEntity);
-            Header[] list = httpPost.getAllHeaders();
-            System.out.println("list.size()的值是：" + list.length + ",当前方法=UniteLoginServiceImpl.login()");
-            for (Header header : list) {
-                System.out.println(header.getName()+":"+header.getValue());
-            }
+//            Header[] list = httpPost.getAllHeaders();
+//            for (Header header : list) {
+//                System.out.println(header.getName()+":"+header.getValue());
+//            }
 
 //            CloseableHttpResponse response =
                     httpClient.execute(httpPost);

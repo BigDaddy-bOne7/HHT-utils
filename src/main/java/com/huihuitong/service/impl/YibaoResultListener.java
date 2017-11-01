@@ -11,11 +11,12 @@ public class YibaoResultListener extends ResultListenerAdpater {
 
     @Override
     public void success(JSONObject jsonObject) {
-
+        System.out.println("jsonObject的值是：" + jsonObject + ",当前方法=YibaoResultListener.success()");
     }
 
     @Override
     public void failure(JSONObject jsonObject) {
+        System.out.println("jsonObject的值是：" + jsonObject + ",当前方法=YibaoResultListener.success()");
     }
 
 }
